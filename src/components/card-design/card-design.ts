@@ -17,6 +17,7 @@ export class CardDesign {
   @Input('encargado') encargado:string;
   @Input('fecha') fecha:string;
   @Input('foto') foto:string;
+  @Input('fechalimite') fechalimite:string;
   text: string;
 
   constructor(public navCtl:NavController) {
@@ -29,7 +30,8 @@ export class CardDesign {
       encargado:this.encargado,
       descripcion:this.descripcion,
       fecha:this.fecha,
-      foto:this.foto
+      foto:this.foto,
+      fechalimite:this.fechalimite
     });
   }
 
