@@ -1,0 +1,19 @@
+<!-- Generated template for the CardDesign component -->
+<ion-card (click)="irADetalles()">
+  <ion-card-content>
+    <div >
+      <img class="img-creadas" src="https://ionicframework.com/dist/preview-app/www/assets/img/nin-live.png"/>
+      <ion-card-title>
+        {{tipo}}
+      </ion-card-title>
+      <p>
+        {{descripcion}}
+      </p>
+    </div>
+
+    <div style="width:100%;float:left;">
+      <span class="s-encargado" item-end>{{encargado}}</span>
+      <span class="s-fecha" item-start>{{fecha}}</span>
+    </div>
+  </ion-card-content>
+</ion-card>

@@ -1,0 +1,54 @@
+<!--
+  Generated template for the DialogoIncidencia page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <ion-title>Crear Incidencia</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+  <form #form="ngForm" (ngSubmit)="addIncidencia();" id="form-new-diag">
+    <ion-item class="transparent">
+      <ion-label stacked>Descripción</ion-label>
+      <ion-textarea type="text" [(ngModel)]="incidencia.descripcion"  name="descripcion"></ion-textarea>
+    </ion-item>
+    <ion-item class="transparent">
+      <ion-label stacked>Fecha limite</ion-label>
+      <ion-input type="date" [(ngModel)]="incidencia.fechalimite"  name="fechalimite"></ion-input>
+    </ion-item>
+
+    <ion-item class="transparent">
+      <ion-label stacked> Tipo</ion-label>
+      <ion-select [(ngModel)]="incidencia.tipo" name="tipo">
+        <ion-option *ngFor="let tipo of tipos" value="{{tipo}}" required>
+          {{tipo}}
+        </ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item class="transparent">
+      <ion-label stacked> Asignar a</ion-label>
+      <ion-select [(ngModel)]="incidencia.encargado" name="encargado">
+        <ion-option *ngFor="let encargado of encargados" value="{{encargado}}" required>
+          {{encargado}}
+        </ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item class="transparent">
+      <ion-label stacked>Ubicacion</ion-label>
+      <ion-textarea  name="ubicacion" [(ngModel)]="incidencia.ubicacion" ></ion-textarea>
+    </ion-item>
+    <ion-item class="transparent">
+      <ion-label stacked>Añadir foto</ion-label>
+      <ion-input type="file"  name="fecha_creacion"></ion-input>
+    </ion-item>
+
+    <button class="button-width" ion-button outline type="submit" block>Crear</button>
+  </form>
+</ion-content>

@@ -1,0 +1,37 @@
+<!--
+  Generated template for the Intro page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+
+
+<ion-content padding>
+  <ion-content padding class="home">
+    <div class="my-title">
+      <h1 >Incidencias Ayuntamiento de La Oliva
+        <div style="height: 10px;"></div>
+        <img src="" alt="" class="logo">
+      </h1>
+
+    </div>
+    <div style="height: 30px;"></div>
+    <form #form="ngForm" (ngSubmit)="submitForm(form)">
+      <ion-list>
+        <ion-item style="padding-left: 0" class="inputs">
+          <ion-label >Usuario</ion-label>
+          <ion-input type="email" name="email" ngModel required></ion-input>
+        </ion-item>
+
+        <ion-item style="padding-left: 0" class="inputs">
+          <ion-label >Contraseña</ion-label>
+          <ion-input type="password" name="password" ngModel required></ion-input>
+        </ion-item>
+
+      </ion-list>
+
+      <button style="margin-top: 30px;" type="submit" ion-button block>Entrar</button>
+    </form>
+  </ion-content>
+</ion-content>

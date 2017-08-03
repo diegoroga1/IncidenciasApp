@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": ";AACC,6BAAc;EACZ,KAAK,EAAC,KAAK;AAEZ,6BAAc;EACZ,QAAQ,EAAE,KAAK;EACf,MAAM,EAAE,IAAI;EACZ,UAAU,EAAE,MAAM",
+"sources": ["encargado.scss"],
+"names": [],
+"file": "encargado.css"
+}
