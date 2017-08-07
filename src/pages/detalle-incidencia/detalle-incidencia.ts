@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { NavController ,NavParams,ToastController,ActionSheetController} from 'ionic-angular';
+import { NavController ,NavParams,ToastController,ActionSheetController,AlertController} from 'ionic-angular';
 import {VistaUbicacion} from '../vista-ubicacion/vista-ubicacion';
 import {Camera, CameraOptions} from '@ionic-native/camera';
+import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
+
 
 @Component({
   selector: 'page-detalle-incidencia',
@@ -10,12 +12,17 @@ import {Camera, CameraOptions} from '@ionic-native/camera';
 export class DetalleIncidencia {
   datosIncidencia=[];
   public photos : any;
+  fotos:any[];
   public base64Image : string;
-  constructor(public navCtrl: NavController,
-              public navParams: NavParams,
-              public actionSheetCtrl: ActionSheetController,
-              private camera : Camera) {
+  constructor(private navCtrl: NavController,
+              private navParams: NavParams,
+              private actionSheetCtrl: ActionSheetController,
+              private camera : Camera,
+              private alert:AlertController,
+              private af:AngularFireDatabase
+            ) {
     this.getParamsIncidencia();
+    this.fotos=['https://ionicframework.com/dist/preview-app/www/assets/img/nin-live.png','https://ionicframework.com/dist/preview-app/www/assets/img/nin-live.png'];
   }
   ionViewDidLoad() {
     console.log('ionViewDidLoad DetalleIncidencia');
@@ -31,8 +38,11 @@ export class DetalleIncidencia {
       'fecha':this.navParams.get('fecha'),
       'descripcion':this.navParams.get('descripcion'),
       'foto':this.navParams.get('foto'),
-      'fechalimite':this.navParams.get('fechalimite')}
+      'fechalimite':this.navParams.get('fechalimite'),
+      'ubicacion':this.navParams.get('ubicacion'),
+      'estado':this.navParams.get('estado')}
     );
+
   }
   presentActionSheet() {
     let actionSheet = this.actionSheetCtrl.create({
@@ -60,7 +70,10 @@ export class DetalleIncidencia {
     actionSheet.present();
   }
   irAlMapa(){
-    this.navCtrl.push(VistaUbicacion);
+    this.navCtrl.push(VistaUbicacion,{
+        datosIncidencia:this.datosIncidencia
+      }
+    );
   }
   addImage(){
     let actionSheet = this.actionSheetCtrl.create({
@@ -103,4 +116,30 @@ export class DetalleIncidencia {
       console.log(err);
     });
   }
+  showAlert() {
+    let prompt = this.alert.create({
+      title: 'Resolver incidencia',
+      subTitle: '¿Está seguro de que quiere resolver la incidencia?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Resolver',
+          handler: data => {
+            console.log('Resuelta');
+            this.resolverIncidencia();
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
+  resolverIncidencia(){
+    this.af.list('/incidencias');
+  }
+
 }

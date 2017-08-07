@@ -18,6 +18,8 @@ export class CardDesign {
   @Input('fecha') fecha:string;
   @Input('foto') foto:string;
   @Input('fechalimite') fechalimite:string;
+  @Input('ubicacion') ubicacion:object;
+  @Input('estado') estado:string;
   text: string;
 
   constructor(public navCtl:NavController) {
@@ -31,7 +33,9 @@ export class CardDesign {
       descripcion:this.descripcion,
       fecha:this.fecha,
       foto:this.foto,
-      fechalimite:this.fechalimite
+      fechalimite:this.fechalimite,
+      ubicacion:this.ubicacion,
+      estado:this.estado
     });
   }
 

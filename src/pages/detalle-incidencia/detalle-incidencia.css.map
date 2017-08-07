@@ -1,7 +1,7 @@
 {
 "version": 3,
-"mappings": "",
-"sources": [],
+"mappings": "AACE,iCAAS;EACP,KAAK,EAAC,KAAK",
+"sources": ["detalle-incidencia.scss"],
 "names": [],
 "file": "detalle-incidencia.css"
 }

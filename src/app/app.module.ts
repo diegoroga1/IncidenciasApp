@@ -2,7 +2,14 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
-import {Camera} from '@ionic-native/camera';
+
+import { File } from '@ionic-native/file';
+import { Transfer } from '@ionic-native/transfer';
+import { FilePath } from '@ionic-native/file-path';
+import { Camera } from '@ionic-native/camera';
+
+import { SubirFoto } from '../providers/subir-foto';
+import { CogerUbicacion } from '../providers/coger-ubicacion';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -21,6 +28,9 @@ import {Asignadas} from '../pages/asignadas/asignadas';
 import {Creadas} from '../pages/creadas/creadas';
 import {Resueltas} from '../pages/resueltas/resueltas';
 import {VistaUbicacion} from '../pages/vista-ubicacion/vista-ubicacion';
+
+import { Geolocation } from '@ionic-native/geolocation';
+import { GoogleMaps } from '@ionic-native/google-maps';
 export const firebaseConfig = {
   apiKey: "AIzaSyB5Y4AeJuBY6XxsX0pELump_3m7sDhdkiI",
   authDomain: "incidenciasapp-129ab.firebaseapp.com",
@@ -67,8 +77,17 @@ export const firebaseConfig = {
   ],
   providers: [
     StatusBar,
-    SplashScreen,Camera,
+    SplashScreen, File,
+    Transfer,
+    Camera,
+    FilePath,
+    SubirFoto,
+    Geolocation,
+    GoogleMaps,
+    CogerUbicacion,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
 export class AppModule {}
+
+

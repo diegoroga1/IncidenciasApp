@@ -1,3 +1,7 @@
-
+page-vista-ubicacion #map {
+  width: 100%;
+  height: 100%; }
+page-vista-ubicacion .scroll {
+  height: 100%; }
 
 /*# sourceMappingURL=vista-ubicacion.css.map */

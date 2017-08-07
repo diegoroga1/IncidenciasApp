@@ -12,11 +12,13 @@
 </ion-header>
 
 <ion-content padding>
-  <form #form="ngForm" (ngSubmit)="addIncidencia();" id="form-new-diag">
+  <form #form="ngForm" id="form-new-diag">
+
     <ion-item class="transparent">
       <ion-label stacked>Descripción</ion-label>
       <ion-textarea type="text" [(ngModel)]="incidencia.descripcion"  name="descripcion"></ion-textarea>
     </ion-item>
+
     <ion-item class="transparent">
       <ion-label stacked>Fecha limite</ion-label>
       <ion-input type="date" [(ngModel)]="incidencia.fechalimite"  name="fechalimite"></ion-input>
@@ -40,15 +42,15 @@
       </ion-select>
     </ion-item>
 
-    <ion-item class="transparent">
-      <ion-label stacked>Ubicacion</ion-label>
-      <ion-textarea  name="ubicacion" [(ngModel)]="incidencia.ubicacion" ></ion-textarea>
-    </ion-item>
-    <ion-item class="transparent">
-      <ion-label stacked>Añadir foto</ion-label>
-      <ion-input type="file"  name="fecha_creacion"></ion-input>
-    </ion-item>
-
-    <button class="button-width" ion-button outline type="submit" block>Crear</button>
+    <ion-label stacked>Añadir foto</ion-label>
+    <ion-buttons>
+      <button ion-button icon-left (click)="presentActionSheet()">
+        <ion-icon name="camera"></ion-icon>Select Image
+      </button>
+      <button ion-button icon-left (click)="uploadImage()" [disabled]="lastImage === null">
+        <ion-icon name="cloud-upload"></ion-icon>Upload
+      </button>
+    </ion-buttons>
+    <button class="button-width" (click)="addIncidencia();" ion-button outline type="submit" block>Crear</button>
   </form>
 </ion-content>

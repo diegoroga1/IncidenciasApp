@@ -1,7 +1,7 @@
 {
 "version": 3,
-"mappings": "",
-"sources": [],
+"mappings": "AACE,yBAAK;EACH,KAAK,EAAE,IAAI;EACX,MAAM,EAAE,IAAI;AAEd,4BAAQ;EACN,MAAM,EAAE,IAAI",
+"sources": ["vista-ubicacion.scss"],
 "names": [],
 "file": "vista-ubicacion.css"
 }

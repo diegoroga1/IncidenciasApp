@@ -16,9 +16,11 @@
 
 <ion-content padding>
   <div class="content-detalle" *ngFor="let item of datosIncidencia">
-    <div class="img-detalle">
-      <img src="https://ionicframework.com/dist/preview-app/www/assets/img/nin-live.png">
-    </div>
+    <ion-slides pager="true" >
+      <ion-slide *ngFor="let foto of fotos">
+        <img [src]="foto">
+      </ion-slide>
+    </ion-slides>
     <ion-title>
       <h2>{{item.tipo}}</h2>
     </ion-title>
@@ -26,11 +28,18 @@
       <h5 style="text-align: center;">{{item.descripcion}}</h5>
       <h5 >{{item.encargado}}</h5>
       <ion-label>Fecha limite: <ion-badge item-end>{{item.fechalimite}}</ion-badge></ion-label>
+      <div class="settings">
+        <ion-buttons end>
+          <button ion-button icon-only (click)="presentActionSheet()">
+            <ion-icon name="settings"></ion-icon>
+          </button>
+        </ion-buttons>
+      </div>
     </div>
     <div>
       <div style="float:left;" class="ubicacion-detalle">
         <ion-buttons>
-          <button (click)="irAlMapa();" ion-button color="danger">
+          <button (click)="irAlMapa();" ion-button color="dark">
             Ver ubicación
           </button>
         </ion-buttons>
@@ -40,15 +49,13 @@
           Añadir foto
         </button>
       </ion-buttons>
-      <div class="settings">
-        <ion-buttons end>
-          <button ion-button icon-only (click)="presentActionSheet()">
-            <ion-icon name="settings"></ion-icon>
-          </button>
-        </ion-buttons>
-      </div>
-    </div>
 
+    </div>
+    <ion-buttons >
+      <button style="width: 100%;" ion-button icon-only (click)="showAlert()" color="danger">
+        Resolver
+      </button>
+    </ion-buttons>
 
   </div>
 

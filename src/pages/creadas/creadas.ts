@@ -11,11 +11,9 @@ export class Creadas {
   creadas=[];
   constructor(public navCtrl: NavController,private af:AngularFireDatabase, public navParams: NavParams) {
   }
-
   ionViewDidLoad() {
     console.log('ionViewDidLoad Creadas');
     this.mostrarIncidenciasCreadas();
-
   }
   mostrarIncidenciasCreadas(){
     this.af.list('/users/'+localStorage.getItem("user_uid")+'/incidenciasCreadas').forEach(data=>{
@@ -24,7 +22,6 @@ export class Creadas {
         console.log(item);
         this.creadas.push(item);
       })
-
     });
   }
 }
