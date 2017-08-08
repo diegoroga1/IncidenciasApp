@@ -1,4 +1,4 @@
-import { NgModule, ErrorHandler } from '@angular/core';
+import { NgModule, ErrorHandler,ViewChild } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
@@ -18,7 +18,6 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 
 import{CardDesign} from '../components/card-design/card-design';
-
 import {Encargado} from '../pages/encargado/encargado';
 import {DialogoIncidencia} from '../pages/dialogo-incidencia/dialogo-incidencia';
 import {Intro} from '../pages/intro/intro';
@@ -85,6 +84,7 @@ export const firebaseConfig = {
     Geolocation,
     GoogleMaps,
     CogerUbicacion,
+    ViewChild,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

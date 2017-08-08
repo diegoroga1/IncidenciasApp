@@ -21,6 +21,7 @@
 
     <ion-item class="transparent">
       <ion-label stacked>Fecha limite</ion-label>
+      <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="incidencia.fechalimite"></ion-datetime>
       <ion-input type="date" [(ngModel)]="incidencia.fechalimite"  name="fechalimite"></ion-input>
     </ion-item>
 
@@ -36,8 +37,8 @@
     <ion-item class="transparent">
       <ion-label stacked> Asignar a</ion-label>
       <ion-select [(ngModel)]="incidencia.encargado" name="encargado">
-        <ion-option *ngFor="let encargado of encargados" value="{{encargado}}" required>
-          {{encargado}}
+        <ion-option *ngFor="let encargado of encargados" value="{{encargado.key}}" required>
+          {{encargado.nombre}}
         </ion-option>
       </ion-select>
     </ion-item>

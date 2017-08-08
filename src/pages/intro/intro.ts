@@ -31,6 +31,7 @@ export class Intro {
     this.afAuth.auth.signInWithEmailAndPassword(this.email,this.passwd).then((success)=>{
       //IDENTIFICAR TIPO USUARIO **************
       localStorage.setItem("user_uid",success.uid);
+      localStorage.setItem("user_name",success.name);
       sessionStorage.setItem("user_uid",success.uid);
       this.navCtrl.setRoot(Admin);
     }).catch(

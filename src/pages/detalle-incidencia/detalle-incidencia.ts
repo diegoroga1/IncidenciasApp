@@ -14,6 +14,7 @@ export class DetalleIncidencia {
   public photos : any;
   fotos:any[];
   public base64Image : string;
+  usuarioActual:string;
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
               private actionSheetCtrl: ActionSheetController,
@@ -27,6 +28,7 @@ export class DetalleIncidencia {
   ionViewDidLoad() {
     console.log('ionViewDidLoad DetalleIncidencia');
     console.log(this.datosIncidencia);
+    this.usuarioActual = localStorage.getItem("user_uid");
   }
   ngOnInit(){
     this.photos=[];
@@ -40,7 +42,8 @@ export class DetalleIncidencia {
       'foto':this.navParams.get('foto'),
       'fechalimite':this.navParams.get('fechalimite'),
       'ubicacion':this.navParams.get('ubicacion'),
-      'estado':this.navParams.get('estado')}
+      'estado':this.navParams.get('estado'),
+      'key':this.navParams.get('key')}
     );
 
   }
@@ -139,7 +142,15 @@ export class DetalleIncidencia {
     prompt.present();
   }
   resolverIncidencia(){
-    this.af.list('/incidencias');
+    this.datosIncidencia.forEach(data=>{
+      console.log(data.key);
+      this.af.object('/incidencias/'+data.key).update({estado:"Resuelta",resueltaPor:this.usuarioActual})
+      this.af.object('/users/'+this.usuarioActual+'/incidenciasResueltas/'+data.key).set(data.descripcion);
+      console.log(this.usuarioActual);
+      console.log("Incidencia Resuelta");
+    })
+    this.navCtrl.pop();
+
   }
 
 }

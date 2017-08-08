@@ -14,8 +14,8 @@
 
 
 <ion-content padding>
-  <ion-list *ngFor="let item of creadas">
-    <card-design [tipo]=item.tipo [encargado]=item.encargado [estado]=item.estado [ubicacion]=item.ubicacion [descripcion]=item.descripcion [fecha]=item.fecha [fechalimite]=item.fechalimite  ></card-design>
+  <ion-list *ngFor="let item of creadas |async">
+    <card-design *ngIf="item.creadaPor == usuarioActual" [key]=item.$key [tipo]=item.tipo [encargado]=item.encargado [estado]=item.estado [ubicacion]=item.ubicacion [descripcion]=item.descripcion [fecha]=item.fecha [fechalimite]=item.fechalimite  ></card-design>
 
 
     <!--<ion-card>

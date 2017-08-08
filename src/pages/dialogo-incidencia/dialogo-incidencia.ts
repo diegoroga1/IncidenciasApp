@@ -22,7 +22,7 @@ export class DialogoIncidencia {
   encargados=[];
   userKey:any;
   ubicacion:{}
-
+  encargadoKey:any;
   constructor(public navCtrl: NavController,
               public af:AngularFireDatabase,
               public navParams: NavParams,
@@ -32,10 +32,10 @@ export class DialogoIncidencia {
               private geolocation:Geolocation,
               private cogerUbi:CogerUbicacion
   ) {
-
     this.tipos=["Basura","Alcantarillado","Farolas"];
     this.incidenciaArray=[];
     console.log(cogerUbi.getUbicacion());
+    this.getEncargadosPermiteRecibir();
     //AÑADIMOS FECHA HORA Y CREADOR A LA INCIDENCIA Q VAMOS A CREAR
      }
   ionViewDidLoad() {
@@ -46,42 +46,44 @@ export class DialogoIncidencia {
     this.geolocation.getCurrentPosition().then((position) => {
       let latLng ={latitud:position.coords.latitude, longitud:position.coords.longitude};
       this.incidencia={fecha: new Date().getDate() + '/'+(new Date().getMonth()+1)+'/'+new Date().getFullYear(),
-        hora:new Date().getHours()+ ':'+ new Date().getMinutes(),creadaPor:localStorage.getItem("user_uid"),ubicacion:latLng,estado:"Pendiente"};
+        hora:new Date().getHours()+ ':'+ new Date().getMinutes(),creadaPor:localStorage.getItem("user_uid"),ubicacion:latLng,estado:"Pendiente",resueltaPor:""};
     }, (err) => {
       console.log(err);
     });
-    this.getEncargadosPermiteRecibir();
+
   }
 
   //AÑADE LA INCIDENCIA CREADA A LA RAMA INCIDENCIAS Y A CADA USUARIO DENTRO DE SU RAMA INCIDENCIASCREADAS
   addIncidencia(){
-      this.af.list('/incidencias').push(this.incidencia).then((success)=>{
-      this.af.list('/users/'+localStorage.getItem("user_uid")+'/incidenciasCreadas').push(this.incidencia).then((success)=>{
-       this.incidenciaArray.push(this.incidencia);
-       this.incidenciaArray.forEach(data=>{
-         console.log(data.encargado);
-         this.addIncidenciaAsignadaUsuario(data.encargado);
+    this.incidenciaArray.push(this.incidencia);
+    this.af.list('/incidencias').push(this.incidencia).then((success)=>{
+      this.incidenciaArray.forEach(data=>{
+        console.log(data.descripcion);
+        console.log(success.key);
 
-       })
+        this.af.object('/users/'+localStorage.getItem("user_uid")+'/incidenciasCreadas/'+success.key).set(data.descripcion);
+        console.log(data.encargado);//key
+        this.addIncidenciaAsignadaUsuario(data.encargado,data.key,data.descripcion);
       })
-      //this.navCtrl.setRoot(Admin);
-    });
+    this.navCtrl.pop();
+  });
   }
-
   //AÑADIR INCIDENCIA AL USUARIO ASIGNADO
-  addIncidenciaAsignadaUsuario(userName){
-    this.cogerKeyUsuarioPorNombre(userName);
-    console.log(this.userKey);
-    this.af.list('/users/'+this.userKey+'/incidenciasAsignadas').push(this.incidencia);
+  addIncidenciaAsignadaUsuario(userKey,key,descripcion){
+   // this.cogerKeyUsuarioPorNombre(userName);
+    console.log(userKey);
+    console.log(descripcion);
+    console.log(key);
+    this.af.object('/users/'+userKey+'/incidenciasAsignadas/'+key).set(descripcion);
   }
 
   //RECOGE ENCARGADOS A LOS QUE SE LE PERMITE ASIGNAR TAREA
   getEncargadosPermiteRecibir(){
     this.af.list('/users').forEach(data=>{
       data.forEach(item=>{
-        console.log(item.recibe);
         if(item.recibe){
-          this.encargados.push(item.nombre);
+          this.encargados.push({nombre:item.nombre,key:item.$key});
+          console.log(this.encargados);
         }
       })
     });
@@ -97,8 +99,6 @@ export class DialogoIncidencia {
       })
     })
   }
-
-
   public presentActionSheet() {
     let actionSheet = this.actionSheetCtrl.create({
       title: 'Seleccionar fuente ',
