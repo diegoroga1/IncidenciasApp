@@ -3,6 +3,7 @@ import { NavController ,NavParams,ToastController,ActionSheetController,AlertCon
 import {VistaUbicacion} from '../vista-ubicacion/vista-ubicacion';
 import {Camera, CameraOptions} from '@ionic-native/camera';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
@@ -20,10 +21,11 @@ export class DetalleIncidencia {
               private actionSheetCtrl: ActionSheetController,
               private camera : Camera,
               private alert:AlertController,
-              private af:AngularFireDatabase
+              private af:AngularFireDatabase,
+              private domsanitizer:DomSanitizer
             ) {
     this.getParamsIncidencia();
-    this.fotos=['https://ionicframework.com/dist/preview-app/www/assets/img/nin-live.png','https://ionicframework.com/dist/preview-app/www/assets/img/nin-live.png'];
+    this.fotos=[];
   }
   ionViewDidLoad() {
     console.log('ionViewDidLoad DetalleIncidencia');
@@ -39,7 +41,7 @@ export class DetalleIncidencia {
       'encargado':this.navParams.get('encargado'),
       'fecha':this.navParams.get('fecha'),
       'descripcion':this.navParams.get('descripcion'),
-      'foto':this.navParams.get('foto'),
+      'fotos':this.navParams.get('fotos'),
       'fechalimite':this.navParams.get('fechalimite'),
       'ubicacion':this.navParams.get('ubicacion'),
       'estado':this.navParams.get('estado'),
@@ -115,6 +117,10 @@ export class DetalleIncidencia {
       this.base64Image = "data:image/jpeg;base64," + imageData;
       this.photos.push(this.base64Image);
       this.photos.reverse();
+      this.datosIncidencia.forEach(data=>{
+        this.af.object('/incidencias/'+data.key).update({foto:this.photos});
+      })
+
     }, (err) => {
       console.log(err);
     });

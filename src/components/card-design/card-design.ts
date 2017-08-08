@@ -1,7 +1,10 @@
 import { Component ,Input} from '@angular/core';
 import {DetalleIncidencia} from '../../pages/detalle-incidencia/detalle-incidencia';
 import { NavController ,NavParams} from 'ionic-angular';
-import {AngularFireDatabase} from 'angularfire2/database';
+import {AngularFireDatabase,FirebaseListObservable} from 'angularfire2/database';
+import { DomSanitizer } from '@angular/platform-browser';
+
+
 
 /**
  * Generated class for the CardDesign component.
@@ -18,14 +21,14 @@ export class CardDesign {
   @Input('descripcion') descripcion:string;
   @Input('encargado') encargado:string;
   @Input('fecha') fecha:string;
-  @Input('foto') foto:string;
+  @Input('fotos') fotos:FirebaseListObservable<any>;
   @Input('fechalimite') fechalimite:string;
   @Input('ubicacion') ubicacion:object;
   @Input('estado') estado:string;
   @Input('key') key:string;
   text: string;
   userName:string;
-  constructor(public navCtl:NavController,private af:AngularFireDatabase) {
+  constructor(public navCtl:NavController,private af:AngularFireDatabase,public domsanitizer:DomSanitizer) {
     console.log('Hello CardDesign Component');
     this.text = 'Hello World';
   }
@@ -36,7 +39,7 @@ export class CardDesign {
       encargado:this.encargado,
       descripcion:this.descripcion,
       fecha:this.fecha,
-      foto:this.foto,
+      fotos:this.fotos,
       fechalimite:this.fechalimite,
       ubicacion:this.ubicacion,
       estado:this.estado,

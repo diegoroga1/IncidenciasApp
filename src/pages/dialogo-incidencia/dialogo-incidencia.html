@@ -5,6 +5,7 @@
   Ionic pages and navigation.
 -->
 <ion-header>
+
   <ion-navbar>
     <ion-title>Crear Incidencia</ion-title>
   </ion-navbar>
@@ -18,11 +19,9 @@
       <ion-label stacked>Descripción</ion-label>
       <ion-textarea type="text" [(ngModel)]="incidencia.descripcion"  name="descripcion"></ion-textarea>
     </ion-item>
-
     <ion-item class="transparent">
       <ion-label stacked>Fecha limite</ion-label>
-      <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="incidencia.fechalimite"></ion-datetime>
-      <ion-input type="date" [(ngModel)]="incidencia.fechalimite"  name="fechalimite"></ion-input>
+      <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="incidencia.fechalimite" name="fechalimite"></ion-datetime>
     </ion-item>
 
     <ion-item class="transparent">
@@ -47,9 +46,6 @@
     <ion-buttons>
       <button ion-button icon-left (click)="presentActionSheet()">
         <ion-icon name="camera"></ion-icon>Select Image
-      </button>
-      <button ion-button icon-left (click)="uploadImage()" [disabled]="lastImage === null">
-        <ion-icon name="cloud-upload"></ion-icon>Upload
       </button>
     </ion-buttons>
     <button class="button-width" (click)="addIncidencia();" ion-button outline type="submit" block>Crear</button>

@@ -5,7 +5,6 @@ import {Admin} from '../admin/admin';
 import {SubirFoto} from '../../providers/subir-foto';
 import { CogerUbicacion } from '../../providers/coger-ubicacion';
 import { Geolocation } from '@ionic-native/geolocation';
-
 import { Camera } from '@ionic-native/camera';
 
 declare var cordova: any;
@@ -19,10 +18,13 @@ export class DialogoIncidencia {
   incidenciaArray=[];
   tipos=[];
   incidencia={};
+  incidenciafinal={};
   encargados=[];
   userKey:any;
   ubicacion:{}
   encargadoKey:any;
+  base64img:string;
+  photos={};
   constructor(public navCtrl: NavController,
               public af:AngularFireDatabase,
               public navParams: NavParams,
@@ -52,15 +54,14 @@ export class DialogoIncidencia {
     });
 
   }
-
   //AÑADE LA INCIDENCIA CREADA A LA RAMA INCIDENCIAS Y A CADA USUARIO DENTRO DE SU RAMA INCIDENCIASCREADAS
   addIncidencia(){
     this.incidenciaArray.push(this.incidencia);
+    console.log(this.incidenciaArray);
+    this.incidenciafinal=this.incidencia;
     this.af.list('/incidencias').push(this.incidencia).then((success)=>{
+      this.af.object('/incidencias/'+success.key+'/fotos').set(this.base64img);
       this.incidenciaArray.forEach(data=>{
-        console.log(data.descripcion);
-        console.log(success.key);
-
         this.af.object('/users/'+localStorage.getItem("user_uid")+'/incidenciasCreadas/'+success.key).set(data.descripcion);
         console.log(data.encargado);//key
         this.addIncidenciaAsignadaUsuario(data.encargado,data.key,data.descripcion);
@@ -71,9 +72,6 @@ export class DialogoIncidencia {
   //AÑADIR INCIDENCIA AL USUARIO ASIGNADO
   addIncidenciaAsignadaUsuario(userKey,key,descripcion){
    // this.cogerKeyUsuarioPorNombre(userName);
-    console.log(userKey);
-    console.log(descripcion);
-    console.log(key);
     this.af.object('/users/'+userKey+'/incidenciasAsignadas/'+key).set(descripcion);
   }
 
@@ -83,7 +81,6 @@ export class DialogoIncidencia {
       data.forEach(item=>{
         if(item.recibe){
           this.encargados.push({nombre:item.nombre,key:item.$key});
-          console.log(this.encargados);
         }
       })
     });
@@ -106,13 +103,13 @@ export class DialogoIncidencia {
         {
           text: 'Cargar desde galería',
           handler: () => {
-            this.sFoto.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
+            this.takePicture();
           }
         },
         {
           text: 'Usar Camara',
           handler: () => {
-            this.sFoto.takePicture(this.camera.PictureSourceType.CAMERA);
+            this.takePicture();
           }
         },
         {
@@ -122,5 +119,18 @@ export class DialogoIncidencia {
       ]
     });
     actionSheet.present();
+  }
+
+  takePicture(){
+    this.camera.getPicture({
+      destinationType: this.camera.DestinationType.DATA_URL,
+      targetWidth: 1000,
+      targetHeight: 1000
+    }).then((imageData)=>{
+      this.base64img="data:image/jpeg;base64,"+imageData;
+      this.photos=this.base64img;
+    }),(err)=>{
+      console.log(err);
+    }
   }
 }

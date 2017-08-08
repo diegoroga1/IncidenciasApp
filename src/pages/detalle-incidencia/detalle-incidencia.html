@@ -16,9 +16,10 @@
 
 <ion-content padding>
   <div class="content-detalle" *ngFor="let item of datosIncidencia">
+    <img [src]="domsanitizer.bypassSecurityTrustUrl(item.fotos)">
     <ion-slides pager="true" >
       <ion-slide *ngFor="let foto of fotos">
-        <img [src]="foto">
+        <img src={{item.fotos}}>
       </ion-slide>
     </ion-slides>
     <ion-title>
