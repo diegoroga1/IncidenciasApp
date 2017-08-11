@@ -7,6 +7,7 @@ import { File } from '@ionic-native/file';
 import { Transfer } from '@ionic-native/transfer';
 import { FilePath } from '@ionic-native/file-path';
 import { Camera } from '@ionic-native/camera';
+import {CogerNombre} from '../providers/coger-nombre';
 
 import { SubirFoto } from '../providers/subir-foto';
 import { CogerUbicacion } from '../providers/coger-ubicacion';
@@ -17,7 +18,8 @@ import {AngularFireModule} from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 
-import{CardDesign} from '../components/card-design/card-design';
+import {InfiniteScrollModule} from 'ngx-infinite-scroll';
+import {CardDesign} from '../components/card-design/card-design';
 import {Encargado} from '../pages/encargado/encargado';
 import {DialogoIncidencia} from '../pages/dialogo-incidencia/dialogo-incidencia';
 import {Intro} from '../pages/intro/intro';
@@ -28,8 +30,10 @@ import {Creadas} from '../pages/creadas/creadas';
 import {Resueltas} from '../pages/resueltas/resueltas';
 import {VistaUbicacion} from '../pages/vista-ubicacion/vista-ubicacion';
 
+import {CogerIncidencias} from '../providers/coger-incidencias';
 import { Geolocation } from '@ionic-native/geolocation';
 import { GoogleMaps } from '@ionic-native/google-maps';
+
 export const firebaseConfig = {
   apiKey: "AIzaSyB5Y4AeJuBY6XxsX0pELump_3m7sDhdkiI",
   authDomain: "incidenciasapp-129ab.firebaseapp.com",
@@ -58,7 +62,8 @@ export const firebaseConfig = {
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    InfiniteScrollModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -85,6 +90,8 @@ export const firebaseConfig = {
     GoogleMaps,
     CogerUbicacion,
     ViewChild,
+    CogerNombre,
+    CogerIncidencias,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

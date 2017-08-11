@@ -4,37 +4,46 @@ import {VistaUbicacion} from '../vista-ubicacion/vista-ubicacion';
 import {Camera, CameraOptions} from '@ionic-native/camera';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import { DomSanitizer } from '@angular/platform-browser';
+import {CogerNombre} from '../../providers/coger-nombre';
 
 
 @Component({
   selector: 'page-detalle-incidencia',
   templateUrl: 'detalle-incidencia.html',
+  providers:[CogerNombre]
 })
 export class DetalleIncidencia {
   datosIncidencia=[];
-  public photos : any;
-  fotos:any[];
+  photos : FirebaseListObservable<any>;
+  fotoNueva:string;
   public base64Image : string;
   usuarioActual:string;
+  nombreUsuario:string;
+  base64img:string;
+  rolUsuario:any;
+  datosAux=[];
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
               private actionSheetCtrl: ActionSheetController,
               private camera : Camera,
               private alert:AlertController,
               private af:AngularFireDatabase,
-              private domsanitizer:DomSanitizer
+              private domsanitizer:DomSanitizer,
+              public cogerNombre:CogerNombre
             ) {
     this.getParamsIncidencia();
-    this.fotos=[];
+
   }
   ionViewDidLoad() {
     console.log('ionViewDidLoad DetalleIncidencia');
     console.log(this.datosIncidencia);
     this.usuarioActual = localStorage.getItem("user_uid");
+    this.af.object('/users/'+this.usuarioActual+'/rol').forEach(data=>{
+      this.rolUsuario=data.$value;
+    });
+    console.log(this.rolUsuario);
   }
-  ngOnInit(){
-    this.photos=[];
-  }
+
   getParamsIncidencia(){
     this.datosIncidencia.push({
       'tipo':this.navParams.get('tipo'),
@@ -47,31 +56,86 @@ export class DetalleIncidencia {
       'estado':this.navParams.get('estado'),
       'key':this.navParams.get('key')}
     );
+    this.datosIncidencia.forEach(data=>{
+      this.cogerNombre.getNameWithKey(data.encargado);
+      this.nombreUsuario=this.cogerNombre.nombre;
 
+    })
   }
+  //ACTION SHEET PARA MODIFICAR INCIDENCIA
   presentActionSheet() {
-    let actionSheet = this.actionSheetCtrl.create({
-      title: 'Editar incidencia',
-      buttons: [
-        {
-          text: 'Cambiar tipo',
-          handler: () => {
-            console.log('Voy a editar tipo');
+    let actionSheet;
+    if(this.rolUsuario!='obrero'){
+      actionSheet= this.actionSheetCtrl.create({
+        title: 'Editar incidencia',
+        buttons: [
+          {
+            text: 'Cambiar tipo',
+            handler: () => {
+
+              console.log('Voy a editar tipo');
+            }
+          },{
+            text: 'Cambiar encargado',
+            handler: () => {
+              console.log('Cambiar encargado');
+            }
+          },{
+            text: 'Añadir foto',
+            handler: () => {
+              this.datosIncidencia.forEach(data=>{
+                if(data.estado!='Resuelta'){
+                  this.addImage()
+                }
+              })
+            }
+          },{
+            text: 'Cambiar ubicación',
+            handler: () => {
+              this.navCtrl.push(VistaUbicacion,
+                {datosIncidencia:this.datosIncidencia}
+              )
+            }
+          },{
+            text: 'Cancelar',
+            role: 'cancel',
+            handler: () => {
+              console.log('Cancel clicked');
+            }
           }
-        },{
-          text: 'Cambiar encargado',
-          handler: () => {
-            console.log('Cambiar encargado');
-          }
-        },{
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        }
-      ]
-    });
+        ]
+      });
+    }else {
+      if (this.rolUsuario != 'obrero') {
+        actionSheet = this.actionSheetCtrl.create({
+          title: 'Editar incidencia',
+          buttons: [
+            {
+              text: 'Cambiar encargado',
+              handler: () => {
+                console.log('Cambiar encargado');
+              }
+            }, {
+              text: 'Añadir foto',
+              handler: () => {
+                this.datosIncidencia.forEach(data => {
+                  if (data.estado != 'Resuelta') {
+                    this.addImage()
+                  }
+                })
+              }
+            }, {
+              text: 'Cancelar',
+              role: 'cancel',
+              handler: () => {
+                console.log('Cancel clicked');
+              }
+            }
+          ]
+        });
+      }
+    }
+
     actionSheet.present();
   }
   irAlMapa(){
@@ -80,6 +144,7 @@ export class DetalleIncidencia {
       }
     );
   }
+  //ACTION SHEET PARA AÑADIR FOTO DE CAMARA O GALERIA
   addImage(){
     let actionSheet = this.actionSheetCtrl.create({
       title: 'Añadir foto',
@@ -88,12 +153,12 @@ export class DetalleIncidencia {
           text: 'Sacar foto',
           icon: 'camera',
           handler: () => {
-            this.takePhoto();
+            this.takePicture();
           }
         },{
           text: 'Subir desde galería',
           handler: () => {
-            console.log('Desde galería');
+            this.choosePicture();
           }
         },{
           text: 'Cancel',
@@ -106,25 +171,51 @@ export class DetalleIncidencia {
     });
     actionSheet.present();
   }
-  takePhoto(){
-    const options : CameraOptions = {
-      quality: 50, // picture quality
-      destinationType: this.camera.DestinationType.DATA_URL,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE
-    }
-    this.camera.getPicture(options) .then((imageData) => {
-      this.base64Image = "data:image/jpeg;base64," + imageData;
-      this.photos.push(this.base64Image);
-      this.photos.reverse();
-      this.datosIncidencia.forEach(data=>{
-        this.af.object('/incidencias/'+data.key).update({foto:this.photos});
-      })
+  /*subirFotoNueva(){
+    this.datosIncidencia.forEach(data=>{
+     // this.photos=this.af.list('/incidencia/'+data.key+'/fotos');
+      this.af.list('/incidencia/'+data.key+'/fotos').push(this.photos);
+    })
 
-    }, (err) => {
+  }*//*
+  pressEvent(e){
+    this.datosIncidencia.forEach(data=>{
+      // this.photos=this.af.list('/incidencia/'+data.key+'/fotos');
+      this.af.list('/incidencia/'+data.key+'/fotos').subscribe(data2=> {
+
+          console.log(data2);
+
+      });
+    })
+    console.log("presionada");
+  }*/
+  //FUNCION PARA USAR CAMARA
+  takePicture(){
+    this.camera.getPicture({
+      destinationType: this.camera.DestinationType.DATA_URL,
+      targetWidth: 1000,
+      targetHeight: 1000
+    }).then((imageData)=>{
+      this.base64img="data:image/jpeg;base64,"+imageData;
+      this.photos.push(this.base64img);
+    }),(err)=>{
       console.log(err);
-    });
+    }
   }
+ choosePicture(){
+    this.camera.getPicture({
+      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      targetWidth: 1000,
+      targetHeight: 1000
+    }).then((imageData)=>{
+      this.base64img="data:image/jpeg;base64,"+imageData;
+      this.photos.push(this.base64img);
+    }),(err)=>{
+      console.log(err);
+    }
+  }
+  //ALERTA PARA RESOLVER INCIDENCIA
   showAlert() {
     let prompt = this.alert.create({
       title: 'Resolver incidencia',
@@ -147,7 +238,9 @@ export class DetalleIncidencia {
     });
     prompt.present();
   }
+  //RESUELVE INCIDENCIA, CAMBIA ESTADO Y AÑADE FOTO DE RESOLUCION
   resolverIncidencia(){
+    this.alertFoto()
     this.datosIncidencia.forEach(data=>{
       console.log(data.key);
       this.af.object('/incidencias/'+data.key).update({estado:"Resuelta",resueltaPor:this.usuarioActual})
@@ -156,6 +249,54 @@ export class DetalleIncidencia {
       console.log("Incidencia Resuelta");
     })
     this.navCtrl.pop();
+
+  }
+  //ALERTA PARA SUBIR FOTO AL RESOLVER
+  alertFoto() {
+    let alert = this.alert.create({
+      title: 'Añadir foto resolución',
+      subTitle: '¿Quiere añadir una foto de la incidencia resuelta?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Añadir foto',
+          handler: data => {
+            console.log('Añadiendo foto');
+            this.takePicture();
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+  doRefresh(refresher) {
+    console.log('Begin async operation', refresher);
+    this.actualizarDatos();
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      refresher.complete();
+    }, 2000);
+  }
+  actualizarDatos(){
+    this.getParamsIncidencia()
+    this.datosIncidencia.forEach(data=>{
+
+      this.af.object('/incidencias/'+data.key).forEach(item=>{
+        console.log(item);
+        this.datosAux.push(item);
+        console.log(item.fotos);
+        this.datosIncidencia=this.datosAux;
+        this.datosAux=[];
+
+      })
+      console.log(this.datosIncidencia);
+
+    })
 
   }
 

@@ -11,31 +11,9 @@
   </ion-navbar>
 
 </ion-header>
-
-
-<ion-content padding>
+<ion-content padding class="home">
   <ion-list *ngFor="let item of creadas |async">
     <card-design *ngIf="item.creadaPor == usuarioActual" [fotos]=item.fotos [key]=item.$key [tipo]=item.tipo [encargado]=item.encargado [estado]=item.estado [ubicacion]=item.ubicacion [descripcion]=item.descripcion [fecha]=item.fecha [fechalimite]=item.fechalimite  ></card-design>
-
-
-    <!--<ion-card>
-      <ion-card-content>
-        <div >
-
-          <img class="img-creadas" src="https://ionicframework.com/dist/preview-app/www/assets/img/nin-live.png"/>
-          <ion-card-title>
-            {{item.tipo}}
-          </ion-card-title>
-          <p>
-            {{item.descripcion}}
-          </p>
-        </div>
-
-        <div style="width:100%;float:left;">
-          <span class="s-encargado" item-end>{{item.encargado}}</span>
-          <span class="s-fecha" item-start>{{item.fecha}}</span>
-        </div>
-      </ion-card-content>
-    </ion-card>-->
   </ion-list>
+
 </ion-content>

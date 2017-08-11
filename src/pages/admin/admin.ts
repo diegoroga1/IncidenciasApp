@@ -15,18 +15,20 @@ export class Admin {
   tab2Root: any = Creadas;
   tab3Root: any = Resueltas;
   usuarioActual:any;
+  rolUsuario:any;
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
-              public af:AngularFireDatabase,
-
+              public af:AngularFireDatabase
   ) {
+    this.af.object('/users/'+localStorage.getItem('user_uid')).forEach(data=>{
+      this.rolUsuario=data.rol;
+    });
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad Admin');
   }
   crearIncidencia(){
-
     this.navCtrl.push(DialogoIncidencia);
   }
 

@@ -7,12 +7,19 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>vista-ubicacion</ion-title>
+    <ion-title>Ubicación</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-  <div #map id="map"></div>
+  <div #map id="map">
+  </div>
+    <ion-buttons class="button-ok">
+      <button disabled={{modificado}} ion-button (click)="cambiarUbicacion()">
+        ACEPTAR
+      </button>
+    </ion-buttons>
+
 </ion-content>

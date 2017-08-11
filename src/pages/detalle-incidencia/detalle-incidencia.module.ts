@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { DetalleIncidencia } from './detalle-incidencia';
-
 @NgModule({
   declarations: [
     DetalleIncidencia,
@@ -9,5 +8,6 @@ import { DetalleIncidencia } from './detalle-incidencia';
   imports: [
     IonicPageModule.forChild(DetalleIncidencia),
   ],
+
 })
 export class DetalleIncidenciaModule {}

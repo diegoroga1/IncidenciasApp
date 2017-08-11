@@ -5,6 +5,8 @@
       <img class="img-creadas" [src]="domsanitizer.bypassSecurityTrustUrl(fotos)" *ngIf="fotos" />
       <ion-card-title>
         {{tipo}}
+        <ion-icon  *ngIf="estado =='Resuelta'" style="color:green;float:right;font-size: 2em;" name="checkmark-circle"></ion-icon>
+        <ion-icon  class="parpadea" *ngIf="caducada && estado =='Pendiente'" style="color:red;float:right;font-size: 2em;" name="close-circle"></ion-icon>
       </ion-card-title>
       <p>
         {{descripcion}}
@@ -12,7 +14,7 @@
     </div>
 
     <div style="width:100%;float:left;">
-      <span class="s-encargado" item-end>{{encargado}}</span>
+      <span class="s-encargado" item-end>Encargado: {{userName}}</span>
       <span class="s-fecha" item-start>{{fecha}}</span>
     </div>
   </ion-card-content>

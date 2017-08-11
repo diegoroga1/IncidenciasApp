@@ -3,5 +3,10 @@ page-vista-ubicacion #map {
   height: 100%; }
 page-vista-ubicacion .scroll {
   height: 100%; }
+page-vista-ubicacion .button-ok {
+  position: absolute;
+  top: 10px;
+  text-align: center;
+  width: 100%; }
 
 /*# sourceMappingURL=vista-ubicacion.css.map */

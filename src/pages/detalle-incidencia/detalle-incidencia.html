@@ -15,21 +15,20 @@
 
 
 <ion-content padding>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <div class="content-detalle" *ngFor="let item of datosIncidencia">
-    <img [src]="domsanitizer.bypassSecurityTrustUrl(item.fotos)">
-    <ion-slides pager="true" >
-      <ion-slide *ngFor="let foto of fotos">
-        <img src={{item.fotos}}>
-      </ion-slide>
-    </ion-slides>
+    <img (press)="pressEvent($event)" [src]="domsanitizer.bypassSecurityTrustUrl(item.fotos)">
+
     <ion-title>
       <h2>{{item.tipo}}</h2>
     </ion-title>
     <div class="texto-detalle">
       <h5 style="text-align: center;">{{item.descripcion}}</h5>
-      <h5 >{{item.encargado}}</h5>
+      <h5 >Encargado: {{nombreUsuario}}</h5>
       <ion-label>Fecha limite: <ion-badge item-end>{{item.fechalimite}}</ion-badge></ion-label>
-      <div class="settings">
+      <div *ngIf="item.estado != 'Resuelta'" class="settings">
         <ion-buttons end>
           <button ion-button icon-only (click)="presentActionSheet()">
             <ion-icon name="settings"></ion-icon>
@@ -45,14 +44,9 @@
           </button>
         </ion-buttons>
       </div>
-      <ion-buttons style="float: left;">
-        <button  (click)="addImage();" ion-button color="dark">
-          Añadir foto
-        </button>
-      </ion-buttons>
 
     </div>
-    <ion-buttons >
+    <ion-buttons *ngIf="item.estado != 'Resuelta'" >
       <button style="width: 100%;" ion-button icon-only (click)="showAlert()" color="danger">
         Resolver
       </button>

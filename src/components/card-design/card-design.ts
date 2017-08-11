@@ -3,8 +3,7 @@ import {DetalleIncidencia} from '../../pages/detalle-incidencia/detalle-incidenc
 import { NavController ,NavParams} from 'ionic-angular';
 import {AngularFireDatabase,FirebaseListObservable} from 'angularfire2/database';
 import { DomSanitizer } from '@angular/platform-browser';
-
-
+import {CogerNombre} from '../../providers/coger-nombre';
 
 /**
  * Generated class for the CardDesign component.
@@ -28,11 +27,28 @@ export class CardDesign {
   @Input('key') key:string;
   text: string;
   userName:string;
-  constructor(public navCtl:NavController,private af:AngularFireDatabase,public domsanitizer:DomSanitizer) {
-    console.log('Hello CardDesign Component');
-    this.text = 'Hello World';
+  caducada=false;
+  fechaHoy:any;
+  day:any;
+  month:any;
+  constructor(public navCtl:NavController,private af:AngularFireDatabase,public domsanitizer:DomSanitizer,public cogerNombre:CogerNombre) {
+    if((new Date().getDate())<10){
+      this.day='0'+(new Date().getDate());
+    }else{
+      this.day=(new Date().getDate());
+    }
+    if((new Date().getMonth()+1)<10){
+      this.month='0'+(new Date().getMonth()+1)
+    }else{
+      this.month=(new Date().getMonth()+1)
+    }
+    this.fechaHoy=new Date().getFullYear()+'-'+this.month+'-'+this.day;
   }
-
+  ngOnInit(){
+    this.cogerNombre.getNameWithKey(this.encargado);
+    this.userName=this.cogerNombre.nombre;
+    this.comprobarCaducada();
+  }
   irADetalles(){
     this.navCtl.push(DetalleIncidencia,{
       tipo:this.tipo,
@@ -43,10 +59,21 @@ export class CardDesign {
       fechalimite:this.fechalimite,
       ubicacion:this.ubicacion,
       estado:this.estado,
-      key:this.key
+      key:this.key,
+      caducada:this.caducada
     });
   }
+  comprobarCaducada(){
+    this.af.object('/incidencias/'+this.key+'/fechalimite').forEach(data=>{
+      console.log(data.$value);
+      console.log(this.fechaHoy);
+      if(data.$value<=this.fechaHoy){
+        this.caducada=true;
+      }else{
+        this.caducada=false;
+      }
+    });
 
-
+  }
 
 }

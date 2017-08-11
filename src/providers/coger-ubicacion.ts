@@ -41,6 +41,7 @@ export class CogerUbicacion {
   }
   setUbicacion(ubi){
     this.ubicacion=ubi;
+    console.log(this.ubicacion);
   }
 
 }

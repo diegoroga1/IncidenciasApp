@@ -14,7 +14,7 @@
     </ion-buttons>
 
     <ion-title style="text-align: center;">Listado de incidencias</ion-title>
-    <ion-buttons end class="boton-añadir">
+    <ion-buttons *ngIf="rolUsuario != 'obrero'" end class="boton-añadir">
       <button ion-button button-only (click)="crearIncidencia()">
         <ion-icon name="add"></ion-icon>
       </button>
@@ -23,7 +23,7 @@
 
 </ion-header>
 
-<ion-content padding>
+<ion-content padding class="home">
   <ion-tabs>
     <ion-tab [root]="tab1Root" tabTitle="Asignadas" [rootParams]="params" tabIcon="checkmark-circle" tabsHideOnSubPages="true"></ion-tab>
     <ion-tab [root]="tab2Root" tabTitle="Creadas" [rootParams]="params" tabIcon="checkmark-circle"></ion-tab>

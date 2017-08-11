@@ -21,7 +21,7 @@
     </ion-item>
     <ion-item class="transparent">
       <ion-label stacked>Fecha limite</ion-label>
-      <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="incidencia.fechalimite" name="fechalimite"></ion-datetime>
+      <ion-datetime displayFormat="DD/MM/YYYY" min={{fechaToday}} [(ngModel)]="incidencia.fechalimite" name="fechalimite"></ion-datetime>
     </ion-item>
 
     <ion-item class="transparent">
@@ -36,7 +36,7 @@
     <ion-item class="transparent">
       <ion-label stacked> Asignar a</ion-label>
       <ion-select [(ngModel)]="incidencia.encargado" name="encargado">
-        <ion-option *ngFor="let encargado of encargados" value="{{encargado.key}}" required>
+        <ion-option *ngFor="let encargado of encargados"  value="{{encargado.key}}" required>
           {{encargado.nombre}}
         </ion-option>
       </ion-select>
@@ -45,7 +45,13 @@
     <ion-label stacked>Añadir foto</ion-label>
     <ion-buttons>
       <button ion-button icon-left (click)="presentActionSheet()">
-        <ion-icon name="camera"></ion-icon>Select Image
+        <ion-icon name="camera"></ion-icon>Añadir foto
+      </button>
+    </ion-buttons>
+    <ion-label stacked>Añadir ubicación</ion-label>
+    <ion-buttons>
+      <button ion-button icon-left (click)="seleccionarUbicacion()">
+        <ion-icon name="maps"></ion-icon>Añadir Ubicación
       </button>
     </ion-buttons>
     <button class="button-width" (click)="addIncidencia();" ion-button outline type="submit" block>Crear</button>

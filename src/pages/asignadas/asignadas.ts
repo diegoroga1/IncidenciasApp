@@ -10,6 +10,7 @@ import {CardDesign} from '../../components/card-design/card-design';
 export class Asignadas {
   asignadas:FirebaseListObservable<any>;
   usuarioActual:any;
+  items=[];
   constructor(public navCtrl: NavController,private af:AngularFireDatabase, public navParams: NavParams) {
   }
   ionViewDidLoad() {
