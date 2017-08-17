@@ -310,7 +310,7 @@ export class DetalleIncidencia {
           }
         },
         {
-          text: 'Sacar foto'
+          text: 'Sacar foto',
           handler: data => {
             console.log('Añadiendo foto');
             this.takePictureR();
