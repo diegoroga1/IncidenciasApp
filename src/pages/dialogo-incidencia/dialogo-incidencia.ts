@@ -31,10 +31,13 @@ export class DialogoIncidencia {
   base64img:string;
   photos:any[]=[];
   latLng:any;
-   fechaToday:any;
-   day:any;
-   month:any;
-   admin:any;
+  fechaToday:any;
+  day:any;
+  month:any;
+  admin:any;
+  adminKey:any;
+  adminDefault:any;
+  adminDefaultKey:any;
   constructor(public navCtrl: NavController,
               public af:AngularFireDatabase,
               public navParams: NavParams,
@@ -69,6 +72,7 @@ export class DialogoIncidencia {
   }
   ionViewWillEnter(){
     this.getEncargadosPermiteRecibir();
+    this.getAdminDefault();
     this.geolocation.getCurrentPosition().then((position) => {//AL DARLE A AÑADIR INCIDENCIA RECOGE LA UBICACION PARA LA INCIDENCIA
       this.latLng ={lat:position.coords.latitude, long:position.coords.longitude};
       this.cogerUbi.setUbicacion(this.latLng);
@@ -108,7 +112,7 @@ export class DialogoIncidencia {
         estado:"Pendiente",
         resueltaPor:"",
         descripcion:data.descripcion,
-        encargado:data.encargado,
+        encargado:data.encargado !=undefined ? data.encargado :this.adminDefaultKey,
         fechalimite:data.fechalimite != undefined ? data.fechalimite:"",
         tipo:data.tipo
       };
@@ -116,7 +120,7 @@ export class DialogoIncidencia {
     this.af.list('/incidencias').push(this.incidenciafinal).then((success)=>{//AÑADE LA INCIDENCIA A LA RAMA INCIDENCIA
       this.af.object('/incidencias/'+success.key+'/foto1').set(this.base64img);//AÑADE LAS FOTOS A LA RAMA FOTOS DE LA INCIDENCIA
       this.incidenciaArray.forEach(data=>{
-        console.log(this.base64img);
+        console.log(data);
         this.af.object('/users/'+localStorage.getItem("user_uid")+'/incidenciasCreadas/'+success.key).set(data.descripcion);
         this.addIncidenciaAsignadaUsuario(data.encargado,success.key,data.descripcion);
         console.log(data.encargado,success.key,data.descripcion)
@@ -131,7 +135,12 @@ export class DialogoIncidencia {
   //AÑADIR INCIDENCIA AL USUARIO ASIGNADO
   addIncidenciaAsignadaUsuario(userKey,key,descripcion){
    // this.cogerKeyUsuarioPorNombre(userName);
-    this.af.object('/users/'+userKey+'/incidenciasAsignadas/'+key).set(descripcion);
+    if(userKey==undefined){
+      this.af.object('/users/'+this.adminDefaultKey+'/incidenciasAsignadas/'+key).set(descripcion);
+    }else{
+      this.af.object('/users/'+userKey+'/incidenciasAsignadas/'+key).set(descripcion);
+
+    }
   }
   //RECOGE ENCARGADOS A LOS QUE SE LE PERMITE ASIGNAR TAREA
   getEncargadosPermiteRecibir(){
@@ -142,6 +151,7 @@ export class DialogoIncidencia {
           console.log(item.rol);
           if(item.rol=='admin'){
             this.admin=item.nombre
+            this.adminKey=item.$key;
             console.log(this.admin);
           }
         }
@@ -229,5 +239,21 @@ export class DialogoIncidencia {
       duration: 3000
     });
     toast.present();
+  }
+
+  getAdminDefault(){
+    this.af.list('/users').forEach(data=>{
+      data.forEach(campos=>{
+        if(campos.default==1){
+          console.log(data);
+          this.adminDefault=campos.nombre;
+          this.adminDefaultKey=campos.$key;
+        }
+        console.log(campos);
+      })
+      console.log(data);
+
+
+    })
   }
 }

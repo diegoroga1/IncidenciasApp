@@ -16,19 +16,22 @@ export class CogerUbicacion {
   public ubicacion:{};
   constructor(public geolocation: Geolocation) {
     console.log('Hello CogerUbicacion Provider');
-    this.geolocation.getCurrentPosition().then((position) => {
+    /*this.geolocation.getCurrentPosition().then((position) => {
       let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
       this.ubicacion=latLng;
       console.log(this.ubicacion);
     }, (err) => {
       console.log(err);
     });
-    console.log(this.ubicacion);
+    console.log(this.ubicacion);*/
+    this.getLatLng();
+
   }
+
   getLatLng(){
     this.geolocation.getCurrentPosition().then((position) => {
       let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-      this.ubicacion=latLng;
+      this.ubicacion={lat:position.coords.latitude,long:position.coords.longitude};
       console.log(this.ubicacion);
     }, (err) => {
       console.log(err);

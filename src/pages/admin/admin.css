@@ -11,6 +11,8 @@ page-admin .fab {
     color: black; }
 page-admin .tab-button-icon {
   color: black !important; }
+page-admin .bar-buttons {
+  color: black; }
 page-admin .tab-button {
   color: black; }
 page-admin .tab-button[aria-selected=true] {
