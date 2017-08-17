@@ -317,7 +317,8 @@ export class DetalleIncidencia {
           }
         },
         {
-          text: 'Subir desde la galería'
+          text: 'Subir desde la galería',
+
           handler: data => {
             console.log('Añadiendo foto');
             this.choosePictureR();
