@@ -1,3 +1,31 @@
 page-admin {
+  .boton-añadir{
+    position: fixed;
+    bottom: 10%;
+    right: 10%;
+  }
+  #toolbar-home .toolbar-background{
+    background-color: #F9B706;
+  }
+  .fab{
+    background-color: #F9B706;
+    .icon{
+      color:black;
+    }
+  }
+  .tab-button-icon{
+    color:black !important;
+
+  }
+
+
+  .tab-button{
+    color:black;
+  }
+  .tab-button[aria-selected=true]{
+    color:#F9B706 !important;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
 
 }

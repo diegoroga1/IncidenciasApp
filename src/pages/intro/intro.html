@@ -16,7 +16,6 @@
       </h1>
 
     </div>
-    <div style="height: 30px;"></div>
     <form #form="ngForm" (ngSubmit)="submitForm(form)">
       <ion-list>
         <ion-item style="padding-left: 0" class="inputs">
@@ -33,5 +32,8 @@
 
       <button style="margin-top: 30px;" type="submit" ion-button block>Entrar</button>
     </form>
+    <div [innerHTML]="logo" id="logo">
+
+    </div>
   </ion-content>
 </ion-content>

@@ -19,6 +19,12 @@ export class CogerIncidencias {
   getData():any{
     let incidenciasList:FirebaseListObservable<any>;
     incidenciasList=this.incidencias;
+    incidenciasList.forEach(data=>{
+      data.forEach(data2=>{
+        console.log(data2.$key);
+      })
+      console.log(data);
+    })
     return incidenciasList;
   }
   getAsyncData(): Promise<any[]> {

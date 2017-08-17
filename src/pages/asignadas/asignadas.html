@@ -6,15 +6,16 @@
 -->
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar id="toolbar-asignadas">
     <ion-title>Asignadas a mi</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 <ion-content padding class="home">
+
   <ion-list *ngFor="let item of asignadas|async">
-  <card-design *ngIf="item.encargado == usuarioActual && item.estado == 'Pendiente'" [fotos]=item.fotos [key]=item.$key [tipo]=item.tipo [encargado]=item.encargado [estado]=item.estado [ubicacion]=item.ubicacion [descripcion]=item.descripcion [fecha]=item.fecha [fechalimite]=item.fechalimite ></card-design>
+  <card-design *ngIf="item.encargado == usuarioActual && item.estado == 'Pendiente'" [foto1]=item.foto1 [key]=item.$key [tipo]=item.tipo [encargado]=item.encargado [estado]=item.estado [ubicacion]=item.ubicacion [descripcion]=item.descripcion [fecha]=item.fecha [fechalimite]=item.fechalimite ></card-design>
   </ion-list>
 </ion-content>
 

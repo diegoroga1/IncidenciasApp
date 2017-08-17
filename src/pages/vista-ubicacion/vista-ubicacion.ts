@@ -76,6 +76,7 @@ export class VistaUbicacion {
   addUbicacionIncidencia(){
     console.log(this.posicionIncidencia,this.posicionIncidencia);
     if(this.posicionIncidencia!=null){
+      this.modificado=true;
       var marker = new google.maps.Marker({
         map: this.map,
         animation: google.maps.Animation.BOUNCE,
@@ -88,6 +89,7 @@ export class VistaUbicacion {
         },
       });
     }else{
+      this.modificado=null;
       var marker = new google.maps.Marker({
         map: this.map,
         animation: google.maps.Animation.BOUNCE,
@@ -130,7 +132,10 @@ export class VistaUbicacion {
   cambiarUbicacion(){
     if(this.navParams.get('datosIncidencia')){//SI LE HE PASADO UNA INCIDENCIA POR PARAMETRO, CAMBIAMOS UBICACION
       this.navParams.get('datosIncidencia').forEach(data=>{
-          this.af.object('/incidencias/' + data.key + '/ubicacion').set(this.posicionIncidencia);
+        if(data.estado!="Resuelta"){
+          console.log(data);
+          this.af.object('/incidencias/' + data.$key + '/ubicacion').set(this.posicionIncidencia);
+        }
       })
     }else{//SI NO, SIGNIFICA QUE LA VAMOS A CREAR
       this.cogerUbi.setUbicacion(this.posicionIncidencia);
@@ -140,4 +145,5 @@ export class VistaUbicacion {
   refresh(){
     console.log("hola");
   }
+
 }

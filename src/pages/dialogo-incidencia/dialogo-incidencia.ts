@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavController ,NavParams,ActionSheetController} from 'ionic-angular';
+import { Component ,ElementRef,ViewChild} from '@angular/core';
+import { NavController ,NavParams,ActionSheetController,ToastController} from 'ionic-angular';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import {Admin} from '../admin/admin';
 import {SubirFoto} from '../../providers/subir-foto';
@@ -7,16 +7,21 @@ import { CogerUbicacion } from '../../providers/coger-ubicacion';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Camera } from '@ionic-native/camera';
 import {VistaUbicacion} from '../vista-ubicacion/vista-ubicacion';
+import {enableProdMode} from '@angular/core';
+
 declare var cordova: any;
 declare var google;
+enableProdMode();
 
 @Component({
   selector: 'page-dialogo-incidencia',
   templateUrl: 'dialogo-incidencia.html',
 })
 export class DialogoIncidencia {
+  fechalimite:any='';
   incidenciaArray=[];
   tipos=[];
+  valor:any;
   incidencia=[];
   incidenciafinal={};
   encargados=[];
@@ -37,24 +42,42 @@ export class DialogoIncidencia {
               public sFoto:SubirFoto,
               private camera: Camera,
               private geolocation:Geolocation,
-              public cogerUbi:CogerUbicacion
-  ) {console.log(this.fechaToday);
+              public cogerUbi:CogerUbicacion,
+              public toast:ToastController
+  ) {
     this.tipos=["Basura","Alcantarillado","Farolas"];
     this.incidenciaArray=[];
-    console.log(this.ubicacion);
-    console.log(cogerUbi.getUbicacion());
-    this.getEncargadosPermiteRecibir();
+    this.base64img="../../assets/images/ayuntamiento.jpg"
+    //this.getEncargadosPermiteRecibir();
+    console.log(this.encargados);
     this.cogerFechaHoy();
+
     this.geolocation.getCurrentPosition().then((position) => {//AL DARLE A AÑADIR INCIDENCIA RECOGE LA UBICACION PARA LA INCIDENCIA
-      this.latLng ={latitud:position.coords.latitude, longitud:position.coords.longitude};
+      this.latLng ={lat:position.coords.latitude, long:position.coords.longitude};
+      this.cogerUbi.setUbicacion(this.latLng);
+      this.ubicacion=this.cogerUbi.getUbicacion();
+      console.log(this.ubicacion);
     }, (err) => {
       console.log(err);
     });
-    //AÑADIMOS FECHA HORA Y CREADOR A LA INCIDENCIA Q VAMOS A CREAR
+
      }
+
   ionViewDidLoad() {
+
     console.log('ionViewDidLoad DialogoIncidencia');
   }
+  ionViewWillEnter(){
+    this.getEncargadosPermiteRecibir();
+    this.geolocation.getCurrentPosition().then((position) => {//AL DARLE A AÑADIR INCIDENCIA RECOGE LA UBICACION PARA LA INCIDENCIA
+      this.latLng ={lat:position.coords.latitude, long:position.coords.longitude};
+      this.cogerUbi.setUbicacion(this.latLng);
+      this.ubicacion=this.cogerUbi.getUbicacion();
+      console.log(this.ubicacion);
+    }, (err) => {
+      console.log(err);
+    });
+ }
   cogerFechaHoy(){
     if((new Date().getDate())<10){
       this.day='0'+(new Date().getDate());
@@ -67,16 +90,16 @@ export class DialogoIncidencia {
       this.month=(new Date().getMonth()+1)
     }
     this.fechaToday=new Date().getFullYear()+'-'+this.month+'-'+this.day;
-  console.log(this.fechaToday);
+
   }
   //AÑADE LA INCIDENCIA CREADA A LA RAMA INCIDENCIAS Y A CADA USUARIO DENTRO DE SU RAMA INCIDENCIASCREADAS
   addIncidencia(){
+
     this.incidenciaArray.push(this.incidencia);//GUARDAMOS LOS DATOS DEL FORM EN UN ARRAY
     this.incidenciaArray.forEach(data=>{
+
       console.log(data);
-      if(data.encargado=='undefined'){
-        data.encargado=='Lorena';
-      }
+      console.log(this.cogerUbi.getUbicacion());
       this.incidenciafinal={//CREAMOS UNA INCIDENCIA INICIAL Y APARTE RECOGEMOS DATOS DEL FORM DEL HTML
         fecha: new Date().getDate() + '/'+(new Date().getMonth()+1)+'/'+new Date().getFullYear(),
         hora:new Date().getHours()+ ':'+ new Date().getMinutes(),
@@ -86,19 +109,23 @@ export class DialogoIncidencia {
         resueltaPor:"",
         descripcion:data.descripcion,
         encargado:data.encargado,
-        fechalimite:data.fechalimite,
+        fechalimite:data.fechalimite != undefined ? data.fechalimite:"",
         tipo:data.tipo
       };
     })
     this.af.list('/incidencias').push(this.incidenciafinal).then((success)=>{//AÑADE LA INCIDENCIA A LA RAMA INCIDENCIA
-      this.af.object('/incidencias/'+success.key+'/fotos').set(this.photos);//AÑADE LAS FOTOS A LA RAMA FOTOS DE LA INCIDENCIA
+      this.af.object('/incidencias/'+success.key+'/foto1').set(this.base64img);//AÑADE LAS FOTOS A LA RAMA FOTOS DE LA INCIDENCIA
       this.incidenciaArray.forEach(data=>{
+        console.log(this.base64img);
         this.af.object('/users/'+localStorage.getItem("user_uid")+'/incidenciasCreadas/'+success.key).set(data.descripcion);
         this.addIncidenciaAsignadaUsuario(data.encargado,success.key,data.descripcion);
         console.log(data.encargado,success.key,data.descripcion)
       })
+      this.writeToast("Se ha creado una incidencia")
     this.navCtrl.pop();
-  });
+  }).catch(error=>{
+    console.log(error);
+    });
 
   }
   //AÑADIR INCIDENCIA AL USUARIO ASIGNADO
@@ -111,7 +138,7 @@ export class DialogoIncidencia {
     this.af.list('/users').forEach(data=>{
       data.forEach(item=>{
         if(item.recibe){
-          this.encargados.push({nombre:item.nombre,key:item.$key});
+          this.encargados.push({nombre:item.nombre,key:item.$key,rol:item.rol});
           console.log(item.rol);
           if(item.rol=='admin'){
             this.admin=item.nombre
@@ -139,15 +166,18 @@ export class DialogoIncidencia {
       buttons: [
         {
           text: 'Cargar desde galería',
+          icon:'images',
           handler: () => {
             //;
-            this.takePicture();
+            this.choosePicture()
           }
         },
         {
           text: 'Usar Camara',
+          icon:'camera',
           handler: () => {
-            this.choosePicture()
+            this.takePicture();
+
 
           }
         },
@@ -168,7 +198,6 @@ export class DialogoIncidencia {
       targetHeight: 1000
     }).then((imageData)=>{
       this.base64img="data:image/jpeg;base64,"+imageData;
-      this.photos.push(this.base64img);
     }),(err)=>{
       console.log(err);
     }
@@ -182,8 +211,6 @@ export class DialogoIncidencia {
       targetHeight: 1000
     }).then((imageData)=>{
       this.base64img="data:image/jpeg;base64,"+imageData;
-
-      this.photos.push(this.base64img);
     }),(err)=>{
       console.log(err);
     }
@@ -196,5 +223,11 @@ export class DialogoIncidencia {
     this.ubicacion=ubicacion;
   }
 
-
+  writeToast(message) {
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
+  }
 }

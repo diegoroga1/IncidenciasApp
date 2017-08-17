@@ -6,24 +6,15 @@
 -->
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar id="toolbar-dialogo">
     <ion-title>Crear Incidencia</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 <ion-content padding>
+
   <form #form="ngForm" id="form-new-diag">
-
-    <ion-item class="transparent">
-      <ion-label stacked>Descripción</ion-label>
-      <ion-textarea type="text" [(ngModel)]="incidencia.descripcion"  name="descripcion"></ion-textarea>
-    </ion-item>
-    <ion-item class="transparent">
-      <ion-label stacked>Fecha limite</ion-label>
-      <ion-datetime displayFormat="DD/MM/YYYY" min={{fechaToday}} [(ngModel)]="incidencia.fechalimite" name="fechalimite"></ion-datetime>
-    </ion-item>
-
     <ion-item class="transparent">
       <ion-label stacked> Tipo</ion-label>
       <ion-select [(ngModel)]="incidencia.tipo" name="tipo">
@@ -32,28 +23,35 @@
         </ion-option>
       </ion-select>
     </ion-item>
-
+    <ion-item class="transparent">
+      <ion-label stacked>Descripción</ion-label>
+      <ion-textarea type="text" [(ngModel)]="incidencia.descripcion"  name="descripcion"></ion-textarea>
+    </ion-item>
+    <ion-item class="transparent">
+      <ion-label stacked>Fecha limite</ion-label>
+      <ion-datetime displayFormat="DD/MM/YYYY" min={{fechaToday}} [(ngModel)]="incidencia.fechalimite" name="fechalimite" value=""></ion-datetime>
+    </ion-item>
     <ion-item class="transparent">
       <ion-label stacked> Asignar a</ion-label>
-      <ion-select [(ngModel)]="incidencia.encargado" name="encargado">
-        <ion-option *ngFor="let encargado of encargados"  value="{{encargado.key}}" required>
+      <ion-select  [(ngModel)]="incidencia.encargado" name="encargado">
+        <ion-option   *ngFor="let encargado of encargados"   value="{{encargado.key}}" required>
           {{encargado.nombre}}
         </ion-option>
       </ion-select>
     </ion-item>
-
-    <ion-label stacked>Añadir foto</ion-label>
-    <ion-buttons>
-      <button ion-button icon-left (click)="presentActionSheet()">
+    <ion-buttons >
+      <button class="boton-foto" style="width: 100%;"ion-button icon-left (click)="presentActionSheet()">
         <ion-icon name="camera"></ion-icon>Añadir foto
       </button>
     </ion-buttons>
-    <ion-label stacked>Añadir ubicación</ion-label>
-    <ion-buttons>
-      <button ion-button icon-left (click)="seleccionarUbicacion()">
-        <ion-icon name="maps"></ion-icon>Añadir Ubicación
+    <div *ngIf="base64img">
+      <img [src]="base64img" style="width: 40px;height: auto;">
+    </div>
+    <ion-buttons >
+      <button class="boton-ubicacion" style="width: 100%;" ion-button icon-left (click)="seleccionarUbicacion()">
+        <ion-icon name="navigate"></ion-icon>Añadir Ubicación
       </button>
     </ion-buttons>
-    <button class="button-width" (click)="addIncidencia();" ion-button outline type="submit" block>Crear</button>
+    <button class="button-width" (click)="addIncidencia();" ion-button outline type="submit" [disabled]="!form.value.descripcion || !form.value.tipo||!form.value.encargado" block>Crear</button>
   </form>
 </ion-content>

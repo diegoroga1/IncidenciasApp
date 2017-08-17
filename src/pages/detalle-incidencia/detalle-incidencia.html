@@ -19,39 +19,50 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <div class="content-detalle" *ngFor="let item of datosIncidencia">
-    <img (press)="pressEvent($event)" [src]="domsanitizer.bypassSecurityTrustUrl(item.fotos)">
+    <img  src="../../assets/images/ayuntamiento.jpg" *ngIf="!item.foto1 && !item.foto2 &&! item.fotoR">
+    <ion-slides pager="true" effect="flip">
+      <ion-slide *ngIf=item.foto1>
+        <img (press)="pressEvent(e,'foto1')" [src]="item.foto1" >
+      </ion-slide>
+      <ion-slide >
+        <ion-icon *ngIf="!item.foto2 && item.estado!='Resuelta'" (click)="addImage()" id="icon-camera" name="camera" ></ion-icon>
+        <img *ngIf=item.foto2 (press)="pressEvent(e,'foto2')" [src]="item.foto2" >
+      </ion-slide>
+      <ion-slide *ngIf=item.fotoR >
+        <div>
+          <img (press)="pressEvent(e,'fotoR')" [src]="item.fotoR">
 
-    <ion-title>
+          <p id="text">
+            RESUELTA
+          </p>
+        </div>
+
+      </ion-slide>
+    </ion-slides>
+  <!--  <img (press)="pressEvent($event)" [src]="domsanitizer.bypassSecurityTrustUrl(item.fotos)">-->
+    <ion-title style="text-align: center;">
       <h2>{{item.tipo}}</h2>
     </ion-title>
     <div class="texto-detalle">
       <h5 style="text-align: center;">{{item.descripcion}}</h5>
       <h5 >Encargado: {{nombreUsuario}}</h5>
-      <ion-label>Fecha limite: <ion-badge item-end>{{item.fechalimite}}</ion-badge></ion-label>
+      <ion-label *ngIf="item.fechalimite!=''">Fecha limite: <ion-badge item-end>{{item.fechalimite}}</ion-badge></ion-label>
       <div *ngIf="item.estado != 'Resuelta'" class="settings">
-        <ion-buttons end>
-          <button ion-button icon-only (click)="presentActionSheet()">
-            <ion-icon name="settings"></ion-icon>
-          </button>
-        </ion-buttons>
-      </div>
-    </div>
-    <div>
-      <div style="float:left;" class="ubicacion-detalle">
         <ion-buttons>
-          <button (click)="irAlMapa();" ion-button color="dark">
-            Ver ubicación
+          <button style="width: 100%;" ion-button icon-only (click)="presentActionSheet()">
+            Editar incidencia
           </button>
         </ion-buttons>
       </div>
-
     </div>
     <ion-buttons *ngIf="item.estado != 'Resuelta'" >
       <button style="width: 100%;" ion-button icon-only (click)="showAlert()" color="danger">
         Resolver
       </button>
     </ion-buttons>
-
+    <div *ngIf="item.estado == 'Resuelta'" >
+      <span style="text-align: center;"><h1>RESUELTA</h1></span>
+    </div>
   </div>
 
 

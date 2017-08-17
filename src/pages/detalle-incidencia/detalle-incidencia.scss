@@ -1,5 +1,30 @@
 page-detalle-incidencia {
-  .settings{
-    float:right;
+
+  #text {
+    z-index: 100;
+    position: absolute;
+    color: white;
+    background-color: rgba(230, 46, 0,0.2);
+    font-size: 2.6em;
+    font-weight: bold;
+    left: 150px;
+    top: 350px;
+  }
+  .swiper-container-horizontal > .swiper-pagination-bullets .swiper-pagination-bullet{
+    width: 14px;
+    height: 14px;
+    background:black;
+  }
+  img{
+    max-height: 390px !important;
+    overflow: inherit;
+  }
+  .badge{
+    background-color: #F9B706;
+    color:black;
+  }
+  #icon-camera{
+    font-size:4.3em;
+    margin-top: 100px;
   }
 }

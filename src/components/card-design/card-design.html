@@ -2,7 +2,9 @@
 <ion-card (click)="irADetalles()">
   <ion-card-content>
     <div >
-      <img class="img-creadas" [src]="domsanitizer.bypassSecurityTrustUrl(fotos)" *ngIf="fotos" />
+     <img class="img-creadas" [src]="domsanitizer.bypassSecurityTrustUrl(foto1)" *ngIf="foto1&&!foto2" />
+     <img class="img-creadas" [src]="domsanitizer.bypassSecurityTrustUrl(foto2)" *ngIf="foto2" />
+     <img class="img-creadas" src="../../assets/images/ayuntamiento.jpg" *ngIf="!foto1&&!foto2" />
       <ion-card-title>
         {{tipo}}
         <ion-icon  *ngIf="estado =='Resuelta'" style="color:green;float:right;font-size: 2em;" name="checkmark-circle"></ion-icon>

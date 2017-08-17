@@ -7,6 +7,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { Observable } from 'rxjs/Observable';
 import * as firebase from 'firebase/app';
 
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'page-intro',
@@ -18,7 +19,9 @@ export class Intro {
   msgVal:string='';
   email:any;
   passwd:any;
-  constructor(public navCtrl: NavController,public toast:ToastController, public afAuth: AngularFireAuth, public af: AngularFireDatabase,public navParams: NavParams) {
+  logo:any;
+  constructor(public navCtrl: NavController,public toast:ToastController, public afAuth: AngularFireAuth, public af: AngularFireDatabase,public navParams: NavParams,public domsanitizer:DomSanitizer) {
+  this.logo=this.domsanitizer.bypassSecurityTrustHtml("<img src='../../assets/images/ayuntamiento.jpg'>")
   }
 
   ionViewDidLoad() {
@@ -33,6 +36,7 @@ export class Intro {
       localStorage.setItem("user_uid",success.uid);
       localStorage.setItem("user_name",success.name);
       sessionStorage.setItem("user_uid",success.uid);
+      this.writeToast("Sesión iniciada correctamente")
       this.navCtrl.setRoot(Admin);
     }).catch(
       (error)=>{

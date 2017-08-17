@@ -14,7 +14,8 @@ import {CogerNombre} from '../../providers/coger-nombre';
 })
 export class DetalleIncidencia {
   datosIncidencia=[];
-  photos : FirebaseListObservable<any>;
+  photosIncidencia: FirebaseListObservable<any>;
+  fotos=[];
   fotoNueva:string;
   public base64Image : string;
   usuarioActual:string;
@@ -22,6 +23,9 @@ export class DetalleIncidencia {
   base64img:string;
   rolUsuario:any;
   datosAux=[];
+  tipos=[];
+  encargados=[];
+  fotoResuelta:string;
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
               private actionSheetCtrl: ActionSheetController,
@@ -29,8 +33,11 @@ export class DetalleIncidencia {
               private alert:AlertController,
               private af:AngularFireDatabase,
               private domsanitizer:DomSanitizer,
-              public cogerNombre:CogerNombre
+              public cogerNombre:CogerNombre,
+              public toast:ToastController
             ) {
+    this.tipos=["Basura","Alcantarillado","Farolas"];
+
     this.getParamsIncidencia();
 
   }
@@ -40,17 +47,23 @@ export class DetalleIncidencia {
     this.usuarioActual = localStorage.getItem("user_uid");
     this.af.object('/users/'+this.usuarioActual+'/rol').forEach(data=>{
       this.rolUsuario=data.$value;
+
     });
     console.log(this.rolUsuario);
+    this.actualizarDatos();
+
   }
 
   getParamsIncidencia(){
+    this.datosIncidencia=[];
     this.datosIncidencia.push({
       'tipo':this.navParams.get('tipo'),
       'encargado':this.navParams.get('encargado'),
       'fecha':this.navParams.get('fecha'),
       'descripcion':this.navParams.get('descripcion'),
-      'fotos':this.navParams.get('fotos'),
+      'foto1':this.navParams.get('foto1'),
+      'foto2':this.navParams.get('foto2'),
+      'fotoR':this.navParams.get('fotoR'),
       'fechalimite':this.navParams.get('fechalimite'),
       'ubicacion':this.navParams.get('ubicacion'),
       'estado':this.navParams.get('estado'),
@@ -72,12 +85,19 @@ export class DetalleIncidencia {
           {
             text: 'Cambiar tipo',
             handler: () => {
-
+              this.mostrarTipos()
               console.log('Voy a editar tipo');
+            }
+          },{
+            text: 'Cambiar ubicación',
+            handler: () => {
+              this.irAlMapa()
+              console.log('Voy a editar la ubicacion');
             }
           },{
             text: 'Cambiar encargado',
             handler: () => {
+              this.mostrarEncargados()
               console.log('Cambiar encargado');
             }
           },{
@@ -90,13 +110,6 @@ export class DetalleIncidencia {
               })
             }
           },{
-            text: 'Cambiar ubicación',
-            handler: () => {
-              this.navCtrl.push(VistaUbicacion,
-                {datosIncidencia:this.datosIncidencia}
-              )
-            }
-          },{
             text: 'Cancelar',
             role: 'cancel',
             handler: () => {
@@ -106,13 +119,13 @@ export class DetalleIncidencia {
         ]
       });
     }else {
-      if (this.rolUsuario != 'obrero') {
         actionSheet = this.actionSheetCtrl.create({
           title: 'Editar incidencia',
           buttons: [
             {
               text: 'Cambiar encargado',
               handler: () => {
+                this.mostrarEncargados();
                 console.log('Cambiar encargado');
               }
             }, {
@@ -133,7 +146,7 @@ export class DetalleIncidencia {
             }
           ]
         });
-      }
+
     }
 
     actionSheet.present();
@@ -154,9 +167,11 @@ export class DetalleIncidencia {
           icon: 'camera',
           handler: () => {
             this.takePicture();
+            //this.subirFotoNueva('adadasdasdas');
           }
         },{
           text: 'Subir desde galería',
+          icon:'images',
           handler: () => {
             this.choosePicture();
           }
@@ -171,24 +186,51 @@ export class DetalleIncidencia {
     });
     actionSheet.present();
   }
-  /*subirFotoNueva(){
+  subirFotoNueva(foto,tipo){
+    this.getParamsIncidencia();
+
+    if(tipo=='dos'){
+      this.datosIncidencia.forEach(data=>{
+        this.af.object('/incidencias/'+data.key+'/foto2').set(foto);
+      })
+    }
+    if(tipo=='R'){
+      this.datosIncidencia.forEach(data=>{
+        this.af.object('/incidencias/'+data.key+'/fotoR').set(foto);
+      })
+    }
+
+  }
+  pressEvent(e,foto){
+    let key;
+    this.getParamsIncidencia();
     this.datosIncidencia.forEach(data=>{
-     // this.photos=this.af.list('/incidencia/'+data.key+'/fotos');
-      this.af.list('/incidencia/'+data.key+'/fotos').push(this.photos);
+    let prompt = this.alert.create({
+      title: '¿Borrar foto?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Confirmar',
+          handler: data2 => {
+              console.log("Voy a borrar");
+              this.af.object('/incidencias/'+data.key+'/'+foto).remove().then((success)=>{
+
+              });
+
+          }
+        }
+      ]
+    });
+      prompt.present();
     })
 
-  }*//*
-  pressEvent(e){
-    this.datosIncidencia.forEach(data=>{
-      // this.photos=this.af.list('/incidencia/'+data.key+'/fotos');
-      this.af.list('/incidencia/'+data.key+'/fotos').subscribe(data2=> {
 
-          console.log(data2);
-
-      });
-    })
-    console.log("presionada");
-  }*/
+  }
   //FUNCION PARA USAR CAMARA
   takePicture(){
     this.camera.getPicture({
@@ -197,7 +239,8 @@ export class DetalleIncidencia {
       targetHeight: 1000
     }).then((imageData)=>{
       this.base64img="data:image/jpeg;base64,"+imageData;
-      this.photos.push(this.base64img);
+      this.subirFotoNueva(this.base64img,'dos')
+
     }),(err)=>{
       console.log(err);
     }
@@ -210,7 +253,8 @@ export class DetalleIncidencia {
       targetHeight: 1000
     }).then((imageData)=>{
       this.base64img="data:image/jpeg;base64,"+imageData;
-      this.photos.push(this.base64img);
+      this.subirFotoNueva(this.base64img,'dos')
+
     }),(err)=>{
       console.log(err);
     }
@@ -240,15 +284,17 @@ export class DetalleIncidencia {
   }
   //RESUELVE INCIDENCIA, CAMBIA ESTADO Y AÑADE FOTO DE RESOLUCION
   resolverIncidencia(){
-    this.alertFoto()
+   this.getParamsIncidencia();
     this.datosIncidencia.forEach(data=>{
       console.log(data.key);
       this.af.object('/incidencias/'+data.key).update({estado:"Resuelta",resueltaPor:this.usuarioActual})
       this.af.object('/users/'+this.usuarioActual+'/incidenciasResueltas/'+data.key).set(data.descripcion);
       console.log(this.usuarioActual);
-      console.log("Incidencia Resuelta");
+      this.writeToast("Incidencia resuelta");
     })
+    this.alertFoto();
     this.navCtrl.pop();
+
 
   }
   //ALERTA PARA SUBIR FOTO AL RESOLVER
@@ -264,15 +310,51 @@ export class DetalleIncidencia {
           }
         },
         {
-          text: 'Añadir foto',
+          text: 'Sacar foto'
           handler: data => {
             console.log('Añadiendo foto');
-            this.takePicture();
+            this.takePictureR();
+          }
+        },
+        {
+          text: 'Subir desde la galería'
+          handler: data => {
+            console.log('Añadiendo foto');
+            this.choosePictureR();
           }
         }
       ]
     });
     alert.present();
+  }
+  takePictureR(){
+    this.camera.getPicture({
+      destinationType: this.camera.DestinationType.DATA_URL,
+      targetWidth: 1000,
+      targetHeight: 1000
+    }).then((imageData)=>{
+      this.base64img="data:image/jpeg;base64,"+imageData;
+      this.subirFotoNueva(this.base64img,'R')
+
+    }),(err)=>{
+      console.log(err);
+    }
+    this.subirFotoNueva(this.base64img,'R')
+
+  }
+  choosePictureR(){
+    this.camera.getPicture({
+      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      targetWidth: 1000,
+      targetHeight: 1000
+    }).then((imageData)=>{
+      this.base64img="data:image/jpeg;base64,"+imageData;
+      this.subirFotoNueva(this.base64img,'R')
+
+    }),(err)=>{
+      console.log(err);
+    }
   }
   doRefresh(refresher) {
     console.log('Begin async operation', refresher);
@@ -285,7 +367,6 @@ export class DetalleIncidencia {
   actualizarDatos(){
     this.getParamsIncidencia()
     this.datosIncidencia.forEach(data=>{
-
       this.af.object('/incidencias/'+data.key).forEach(item=>{
         console.log(item);
         this.datosAux.push(item);
@@ -299,5 +380,75 @@ export class DetalleIncidencia {
     })
 
   }
+  cambiarTipo(tipoNuevo){
+    this.getParamsIncidencia()
+    this.datosIncidencia.forEach(data=>{
+      this.af.object('/incidencias/'+data.key+'/tipo').set(tipoNuevo).then(()=> {
+        this.writeToast("Se ha cambiado el tipo de incidencia");
+      })
+    })
+  }
+  cambiarEncargado(encargadoNuevo){
+    this.getParamsIncidencia()
+    this.datosIncidencia.forEach(data=>{
+      this.af.object('/incidencias/'+data.key+'/encargado').set(encargadoNuevo).then(()=>{
+        this.writeToast("Se ha cambiado el encargado")
+      });
 
+    })
+  }
+  mostrarTipos() {
+    let alert = this.alert.create();
+    alert.setTitle('Selecciona el tipo de incidencia');
+    this.tipos.forEach(data=>{
+      console.log(data);
+      alert.addInput({
+        type: 'radio',
+        label: data,
+        value: data
+      });
+    })
+    alert.addButton('Cancel');
+    alert.addButton({
+      text: 'OK',
+      handler: data => {
+        console.log(data);
+        this.cambiarTipo(data)
+      }
+    });
+    alert.present();
+  }
+  mostrarEncargados() {
+    let alert = this.alert.create();
+    alert.setTitle('Selecciona un nuevo encargado');
+    this.af.list('/users').forEach(data=>{
+      data.forEach(item=>{
+        console.log(item);
+        if(item.recibe){
+          console.log(item.nombre);
+          alert.addInput({
+            type: 'radio',
+            label: item.nombre,
+            value: item.nombre
+          });
+        }
+    });
+    })
+    alert.addButton('Cancel');
+    alert.addButton({
+      text: 'OK',
+      handler: data => {
+        console.log(data);
+        this.cambiarEncargado(data)
+      }
+    });
+    alert.present();
+  }
+  writeToast(message) {
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
+  }
 }

@@ -1,4 +1,6 @@
 page-creadas .home, page-asignadas .home, page-resueltas .home {
   background-color: lightgray; }
+page-creadas .title, page-asignadas .title, page-resueltas .title {
+  text-align: center; }
 
 /*# sourceMappingURL=app.css.map */

@@ -1,3 +1,21 @@
-
+@charset "UTF-8";
+page-admin .boton-a├▒adir {
+  position: fixed;
+  bottom: 10%;
+  right: 10%; }
+page-admin #toolbar-home .toolbar-background {
+  background-color: #F9B706; }
+page-admin .fab {
+  background-color: #F9B706; }
+  page-admin .fab .icon {
+    color: black; }
+page-admin .tab-button-icon {
+  color: black !important; }
+page-admin .tab-button {
+  color: black; }
+page-admin .tab-button[aria-selected=true] {
+  color: #F9B706 !important;
+  font-weight: bold;
+  letter-spacing: 1px; }
 
 /*# sourceMappingURL=admin.css.map */

@@ -5,8 +5,7 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-
-  <ion-navbar>
+  <ion-navbar id="toolbar-home">
     <ion-buttons start>
       <button ion-button icon-only menuToggle>
         <ion-icon name="menu"></ion-icon>
@@ -14,19 +13,21 @@
     </ion-buttons>
 
     <ion-title style="text-align: center;">Listado de incidencias</ion-title>
-    <ion-buttons *ngIf="rolUsuario != 'obrero'" end class="boton-añadir">
-      <button ion-button button-only (click)="crearIncidencia()">
-        <ion-icon name="add"></ion-icon>
-      </button>
-    </ion-buttons>
+
   </ion-navbar>
 
 </ion-header>
 
 <ion-content padding class="home">
+
   <ion-tabs>
-    <ion-tab [root]="tab1Root" tabTitle="Asignadas" [rootParams]="params" tabIcon="checkmark-circle" tabsHideOnSubPages="true"></ion-tab>
-    <ion-tab [root]="tab2Root" tabTitle="Creadas" [rootParams]="params" tabIcon="checkmark-circle"></ion-tab>
+    <ion-tab [root]="tab1Root" tabTitle="Asignadas" [rootParams]="params" tabIcon="construct" tabsHideOnSubPages="true"></ion-tab>
+    <ion-tab [root]="tab2Root" tabTitle="Creadas" [rootParams]="params" tabIcon="create"></ion-tab>
     <ion-tab [root]="tab3Root" tabTitle="Resueltas" [rootParams]="params" tabIcon="checkmark-circle"></ion-tab>
   </ion-tabs>
+  <ion-buttons *ngIf="rolUsuario != 'obrero'" end class="boton-añadir">
+    <button ion-fab (click)="crearIncidencia()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-buttons>
 </ion-content>

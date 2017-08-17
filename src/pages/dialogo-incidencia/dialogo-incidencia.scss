@@ -1,3 +1,26 @@
 page-dialogo-incidencia {
+  .label{
+    color:black !important;
+  }
+  #toolbar-dialogo .toolbar-background{
+    background-color: #F9B706;
 
+  }
+  .button-width{
+    border-color:black;
+    border-width: 2px;
+    color:white;
+
+    background-color: black;
+
+  }
+  .button-width[disabled]{
+    background-color: white;
+    color:black;
+  }
+  .boton-foto,.boton-ubicacion{
+    background-color: white;
+    color:black;
+    border:2px solid #F9B706;
+  }
 }

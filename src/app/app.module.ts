@@ -17,6 +17,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import {AngularFireModule} from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { SubirArchivo } from '../providers/subir-archivo';
+
 
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {CardDesign} from '../components/card-design/card-design';
@@ -92,6 +94,7 @@ export const firebaseConfig = {
     ViewChild,
     CogerNombre,
     CogerIncidencias,
+    SubirArchivo,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

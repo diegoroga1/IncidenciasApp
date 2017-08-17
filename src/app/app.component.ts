@@ -17,6 +17,7 @@ export class MyApp {
   @ViewChild('content') navCtrl: NavController;
   rootPage:any=Intro;
   usuarioActual:any;
+  tipo:any;
   user: string[] = [null];
   constructor(platform: Platform,public firebase:AngularFireAuth,public toast:ToastController,public af:AngularFireDatabase,statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
@@ -25,6 +26,14 @@ export class MyApp {
       statusBar.styleDefault();
       splashScreen.hide();
       this.getNameCurrentUser();
+      this.af.list('/users/'+localStorage.getItem("user_uid")).forEach(data=>{
+        data.forEach(campos=>{
+          if(campos.$key=='rol'){
+            this.tipo=campos.$value;
+          }
+
+        })
+      })
     });
     localStorage.getItem("user_uid") ? this.user[0] = localStorage.getItem("user_uid") : this.user[0] = null;
 
@@ -42,8 +51,10 @@ export class MyApp {
   getNameCurrentUser(){
     this.af.list('/users/'+localStorage.getItem("user_uid")).forEach(data=>{
       data.forEach(campos=>{
+
         if(campos.$key=="nombre"){
           console.log(campos.$value);
+
           this.usuarioActual=campos.$value;
         }
       })

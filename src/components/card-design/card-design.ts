@@ -20,7 +20,9 @@ export class CardDesign {
   @Input('descripcion') descripcion:string;
   @Input('encargado') encargado:string;
   @Input('fecha') fecha:string;
-  @Input('fotos') fotos:FirebaseListObservable<any>;
+  @Input('foto1') foto1:FirebaseListObservable<any>;
+  @Input('foto2') foto2:FirebaseListObservable<any>;
+  @Input('fotoR') fotoR:FirebaseListObservable<any>;
   @Input('fechalimite') fechalimite:string;
   @Input('ubicacion') ubicacion:object;
   @Input('estado') estado:string;
@@ -55,7 +57,9 @@ export class CardDesign {
       encargado:this.encargado,
       descripcion:this.descripcion,
       fecha:this.fecha,
-      fotos:this.fotos,
+      foto1:this.foto1,
+      foto2:this.foto2,
+      fotoR:this.fotoR,
       fechalimite:this.fechalimite,
       ubicacion:this.ubicacion,
       estado:this.estado,
