@@ -17,9 +17,9 @@
   <form #form="ngForm" id="form-new-diag">
     <ion-item class="transparent">
       <ion-label stacked> Tipo</ion-label>
-      <ion-select [(ngModel)]="incidencia.tipo" name="tipo">
-        <ion-option *ngFor="let tipo of tipos" value="{{tipo}}" required>
-          {{tipo}}
+      <ion-select [(ngModel)]="incidencia.tipo"  name="tipo">
+        <ion-option *ngFor="let tipo of tipos" value="{{tipo.$key}}"  required>
+          {{tipo.$key}}
         </ion-option>
       </ion-select>
     </ion-item>
@@ -44,8 +44,8 @@
         <ion-icon name="camera"></ion-icon>Añadir foto
       </button>
     </ion-buttons>
-    <div *ngIf="base64img">
-      <img [src]="base64img" style="width: 40px;height: auto;">
+    <div style="margin: 0;text-align: center;" *ngIf="fotoOk">
+      <p style="">Vista previa : <img style="vertical-align: middle;" [src]="domsanitizer.bypassSecurityTrustUrl(base64img)" style="width: 40px;height: auto;"></p>
     </div>
     <ion-buttons >
       <button class="boton-ubicacion" style="width: 100%;" ion-button icon-left (click)="seleccionarUbicacion()">

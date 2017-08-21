@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component,Inject } from '@angular/core';
 import { NavController ,NavParams,ToastController} from 'ionic-angular';
 import {AngularFireModule} from 'angularfire2';
 import {Admin} from '../admin/admin';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Observable } from 'rxjs/Observable';
-import * as firebase from 'firebase/app';
-
+import {FirebaseApp} from 'angularfire2';
+import * as firebase from 'firebase';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
@@ -20,12 +20,15 @@ export class Intro {
   email:any;
   passwd:any;
   logo:any;
-  constructor(public navCtrl: NavController,public toast:ToastController, public afAuth: AngularFireAuth, public af: AngularFireDatabase,public navParams: NavParams,public domsanitizer:DomSanitizer) {
-  this.logo=this.domsanitizer.bypassSecurityTrustHtml("<img src='../../assets/images/ayuntamiento.jpg'>")
+  imageDefault:any;
+  constructor(public navCtrl: NavController,@Inject(FirebaseApp) firebaseApp: firebase.app.App,public toast:ToastController, public afAuth: AngularFireAuth, public af: AngularFireDatabase,public navParams: NavParams,public domsanitizer:DomSanitizer) {
+    firebaseApp.storage().ref().child('ayuntamiento.jpg').getDownloadURL().then(url => this.imageDefault = url);
+
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad Intro');
+
   }
   submitForm(form){
     this.email=form.value.email;

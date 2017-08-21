@@ -14,7 +14,7 @@
 
 <ion-content padding class="home">
   <ion-list *ngFor="let item of resueltas|async">
-    <card-design *ngIf="item.estado == 'Resuelta'" [foto1]=item.foto1 [key]=item.$key [tipo]=item.tipo [encargado]=item.encargado [estado]=item.estado [ubicacion]=item.ubicacion [descripcion]=item.descripcion [fecha]=item.fecha [fechalimite]=item.fechalimite></card-design>
+    <card-design *ngIf="item.estado == 'Resuelta'" [foto1]=item.foto1 [codigo]=item.codigo [key]=item.$key [tipo]=item.tipo [encargado]=item.encargado [estado]=item.estado [ubicacion]=item.ubicacion [descripcion]=item.descripcion [fecha]=item.fecha [fechalimite]=item.fechalimite></card-design>
   </ion-list>
 </ion-content>
 

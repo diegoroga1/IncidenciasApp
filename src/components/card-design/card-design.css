@@ -11,6 +11,9 @@ card-design .card-content {
   padding-top: 2px; }
 card-design .card {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23); }
+card-design .s-codigo strong {
+  float: right;
+  padding-top: 5px; }
 card-design .parpadea {
   animation-name: parpadeo;
   animation-duration: 1s;

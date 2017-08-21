@@ -12,7 +12,7 @@
 </ion-header>
 <ion-content padding class="home">
   <ion-list *ngFor="let item of creadas |async">
-    <card-design *ngIf="item.creadaPor == usuarioActual" [foto1]=item.foto1 [key]=item.$key [tipo]=item.tipo [encargado]=item.encargado [estado]=item.estado [ubicacion]=item.ubicacion [descripcion]=item.descripcion [fecha]=item.fecha [fechalimite]=item.fechalimite  ></card-design>
+    <card-design *ngIf="item.creadaPor == usuarioActual" [codigo]=item.codigo [foto1]=item.foto1 [key]=item.$key [tipo]=item.tipo [encargado]=item.encargado [estado]=item.estado [ubicacion]=item.ubicacion [descripcion]=item.descripcion [fecha]=item.fecha [fechalimite]=item.fechalimite  ></card-design>
   </ion-list>
 
 </ion-content>
