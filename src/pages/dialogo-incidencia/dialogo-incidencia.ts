@@ -1,4 +1,4 @@
-import { Component ,ElementRef,ViewChild,Input} from '@angular/core';
+import { Component ,Inject,ElementRef,ViewChild,Input} from '@angular/core';
 import { NavController ,NavParams,ActionSheetController,ToastController} from 'ionic-angular';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import {Admin} from '../admin/admin';
@@ -9,7 +9,8 @@ import { Camera } from '@ionic-native/camera';
 import {VistaUbicacion} from '../vista-ubicacion/vista-ubicacion';
 import {enableProdMode} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-
+import {FirebaseApp} from 'angularfire2';
+import * as firebase from 'firebase';
 declare var cordova: any;
 declare var google;
 enableProdMode();
@@ -42,6 +43,8 @@ export class DialogoIncidencia {
   fotoOk=false;
   id:any;
   codigoTipo:any;
+  storageRef:any;
+  fileUri:any;
   constructor(public navCtrl: NavController,
               public af:AngularFireDatabase,
               public navParams: NavParams,
@@ -51,7 +54,8 @@ export class DialogoIncidencia {
               private geolocation:Geolocation,
               public cogerUbi:CogerUbicacion,
               public toast:ToastController,
-              public domsanitizer:DomSanitizer
+              public domsanitizer:DomSanitizer,
+              @Inject(FirebaseApp) firebaseApp: firebase.app.App
   ) {
     this.af.list('/tipos').forEach(tipos=>{
       tipos.forEach(tipo=>{
@@ -61,6 +65,16 @@ export class DialogoIncidencia {
     console.log(this.tipos);
     this.incidenciaArray=[];
     this.cogerFechaHoy();
+    var idActual=-1;
+    this.af.list('/incidencias').forEach(data=>{
+      data.forEach(item=>{
+        if(item.id>idActual){
+          idActual=item.id;
+        }
+      })
+    })
+      this.id=idActual+1;
+      console.log(this.id);
 
     this.geolocation.getCurrentPosition().then((position) => {//AL DARLE A AÑADIR INCIDENCIA RECOGE LA UBICACION PARA LA INCIDENCIA
       this.latLng ={lat:position.coords.latitude, long:position.coords.longitude};
@@ -70,13 +84,9 @@ export class DialogoIncidencia {
     }, (err) => {
       console.log(err);
     });
+    this.storageRef=firebaseApp.storage().ref();
 
-    this.af.list('/incidencias').forEach(data=>{
-      this.id=data.length +1
-      console.log(this.id);
-    })
   }
-
   ionViewDidLoad() {
     console.log('ionViewDidLoad DialogoIncidencia');
   }
@@ -109,13 +119,16 @@ export class DialogoIncidencia {
   }
   //AÑADE LA INCIDENCIA CREADA A LA RAMA INCIDENCIAS Y A CADA USUARIO DENTRO DE SU RAMA INCIDENCIASCREADAS
   addIncidencia(){
+
     this.incidenciaArray.push(this.incidencia);//GUARDAMOS LOS DATOS DEL FORM EN UN ARRAY
     this.incidenciaArray.forEach(data=>{
       this.tipos.forEach(campos=>{
         if(campos.$key==data.tipo){
           this.codigoTipo=campos.$value;
         }
+
       })
+
       this.incidenciafinal={//CREAMOS UNA INCIDENCIA INICIAL Y APARTE RECOGEMOS DATOS DEL FORM DEL HTML
         fecha: new Date().getDate() + '/'+(new Date().getMonth()+1)+'/'+new Date().getFullYear(),
         hora:new Date().getHours()+ ':'+ new Date().getMinutes(),
@@ -130,11 +143,18 @@ export class DialogoIncidencia {
         id: this.id,
         codigo:this.codigoTipo+'-'+this.id
       };
+
     })
     this.af.list('/incidencias').push(this.incidenciafinal).then((success)=>{
       //AÑADE LA INCIDENCIA A LA RAMA INCIDENCIA
+      let codigoIncidencia=this.codigoTipo+'-'+this.id;
       if(this.base64img){
-        this.af.object('/incidencias/'+success.key+'/foto1').set(this.base64img);//AÑADE LAS FOTOS A LA RAMA FOTOS DE LA INCIDENCIA
+        //this.af.object('/incidencias/'+success.key+'/foto1').set(this.base64img);//AÑADE LAS FOTOS A LA RAMA FOTOS DE LA INCIDENCIA
+        this.storageRef.child('imagenes/'+this.id+'/foto1.jpg').putString(this.base64img,'base64').then(snapshot=>{
+
+        }).catch(error=>{
+        });
+
       }
       this.incidenciaArray.forEach(data=>{
         console.log(data);
@@ -217,16 +237,18 @@ export class DialogoIncidencia {
     actionSheet.present();
   }
 
+
+
   //Abre la camara para sacar foto y la guarda en base64 en array photos
   takePicture(){
     this.camera.getPicture({
       destinationType: this.camera.DestinationType.DATA_URL,
+      quality: 100,
       targetWidth: 1000,
       targetHeight: 1000
     }).then((imageData)=>{
-      this.base64img="data:image/jpeg;base64,"+imageData;
+      this.base64img=imageData;
       this.fotoOk=true;
-
     }),(err)=>{
       console.log(err);
     }
@@ -239,7 +261,7 @@ export class DialogoIncidencia {
       targetWidth: 1000,
       targetHeight: 1000
     }).then((imageData)=>{
-      this.base64img="data:image/jpeg;base64,"+imageData;
+      this.base64img=imageData;
       this.fotoOk=true;
     }),(err)=>{
       console.log(err);

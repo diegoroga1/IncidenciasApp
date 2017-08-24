@@ -19,6 +19,8 @@ export class VistaUbicacion {
   lat:any;
   long:any;
   modificado=true;
+  marker:any;
+  markerIn:any;
   constructor(public navCtrl: NavController, public af:AngularFireDatabase,public cogerUbi:CogerUbicacion,private googleMaps: GoogleMaps, public navParams: NavParams,public geolocation: Geolocation,private ubicacion:CogerUbicacion) {
     //this.loadMap();
     this.getCurrentPosition()
@@ -37,17 +39,23 @@ export class VistaUbicacion {
 
   }
   //Crea un mapa
+    pressEvent(e){
+      console.log(e);
+
+    }
     loadMap(){
        let latLng = new google.maps.LatLng(this.miPosicion.lat, this.miPosicion.long);
         let mapOptions = {
-          center: latLng,
+          center: this.posicionIncidencia,
           zoom: 15,
           mapTypeId: google.maps.MapTypeId.Satellite
         }
         this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+
         this.addMiUbicacion();
-        this.addUbicacionIncidencia();
+        this.addUbicacionIncidencia(this.posicionIncidencia);
     }
+
     //Coge ubicacion actual
     getCurrentPosition(){
       this.geolocation.getCurrentPosition()
@@ -64,24 +72,24 @@ export class VistaUbicacion {
     }
     //Señaliza mi ubicacion con marcador por defecto
   addMiUbicacion(){
-    let marker = new google.maps.Marker({
+      console.log(this.geolocation.getCurrentPosition());
+   this.marker = new google.maps.Marker({
       map: this.map,
       animation: google.maps.Animation.DROP,
-      position: this.map.getCenter(),
+      position: new google.maps.LatLng(this.miPosicion.lat, this.miPosicion.long),
     });
     let content = "<h4>Information!</h4>";
-    this.addInfoWindow(marker, content);
+    this.addInfoWindow(this.marker, content);
   }
   //Señaliza ubicacion de la incidencia
-  addUbicacionIncidencia(){
+  addUbicacionIncidencia(pos){
     console.log(this.posicionIncidencia,this.posicionIncidencia);
-    if(this.posicionIncidencia!=null){
-      this.modificado=true;
-      var marker = new google.maps.Marker({
+    if(pos!=null){
+      this.modificado=null;
+      this.markerIn = new google.maps.Marker({
         map: this.map,
         animation: google.maps.Animation.BOUNCE,
-        position:  this.posicionIncidencia,
-        draggable:true,
+        position:  pos,
         icon: {
           path: google.maps.SymbolPath.CIRCLE,
           scale: 6, //tamaño
@@ -90,11 +98,10 @@ export class VistaUbicacion {
       });
     }else{
       this.modificado=null;
-      var marker = new google.maps.Marker({
+      this.markerIn = new google.maps.Marker({
         map: this.map,
         animation: google.maps.Animation.BOUNCE,
         position:  this.map.getCenter(),
-        draggable:true,
         icon: {
           path: google.maps.SymbolPath.CIRCLE,
           scale: 6, //tamaño
@@ -103,21 +110,51 @@ export class VistaUbicacion {
       });
       this.posicionIncidencia=this.miPosicion;
     }
+    let longpress=false;
+    let start;
 
+    google.maps.event.addListener(this.map,'click',function (data) {
+      if(longpress){
+        this.markerIn.setMap(null);
+        console.log(data.latLng);
+        var pos=data.latLng;
+        let lat=pos.lat();
+        let long=pos.lng();
+        this.modificado=null;
+        this.posicionIncidencia={lat,long};
+        this.addUbicacionIncidencia(data.latLng);
+        console.log(this.posicionIncidencia);
+      }
+    }.bind(this));
+
+    google.maps.event.addListener(this.map, 'mousedown', function(event){
+      start = new Date().getTime();
+
+    });
+    google.maps.event.addListener(this.map, 'mouseup', function(event){
+      let end = new Date().getTime();
+      longpress = (end - start < 500) ? false : true;
+
+    });
     //RECOGE EL EVENTO DE ARRASTRE DEL MARCADOR EN EL MAPA
-    google.maps.event.addListener(marker, 'dragend', function() {
+    /*google.maps.event.addListener(marker, 'dragend', function(data) {
+      console.log(data);
+      console.log(marker);
       var pos = marker.getPosition()
       let lat=pos.lat();
       let long=pos.lng();
       console.log(lat,long)
       this.modificado=null;
       this.posicionIncidencia={lat,long};
-    }.bind(this));
+    }.bind(this));*/
 
-      marker.setMap(this.map);
+      this.marker.setMap(this.map);
+
+      this.markerIn.setMap(this.map);
       //this.map.addMarker(marker);
     let content = "<h4>Information!</h4>";
-    this.addInfoWindow(marker, content);
+    this.addInfoWindow(this.marker, content);
+    this.addInfoWindow(this.markerIn, content);
   }
   //Añade informacion al marcador
   addInfoWindow(marker, content){

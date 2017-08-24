@@ -2,13 +2,14 @@
 <ion-card (click)="irADetalles()">
   <ion-card-content>
     <div >
-     <img class="img-creadas" [src]="domsanitizer.bypassSecurityTrustUrl(foto1)" *ngIf="foto1&&!foto2" />
-     <img class="img-creadas" [src]="domsanitizer.bypassSecurityTrustUrl(foto2)" *ngIf="foto2" />
-     <img class="img-creadas" [src]="domsanitizer.bypassSecurityTrustUrl(imageDefault)" *ngIf="!foto1&&!foto2&&imageDefault" />
+     <img class="img-creadas" [src]="domsanitizer.bypassSecurityTrustUrl(foto1)" *ngIf="foto1&&!foto2&&!fotoR" />
+     <img class="img-creadas" [src]="domsanitizer.bypassSecurityTrustUrl(foto2)" *ngIf="foto2&&!fotoR" />
+     <img class="img-creadas" [src]="domsanitizer.bypassSecurityTrustUrl(fotoR)" *ngIf="fotoR" />
+     <img class="img-creadas" [src]="domsanitizer.bypassSecurityTrustUrl(imageDefault)" *ngIf="!foto1&&!foto2&&!fotoR&&imageDefault" />
       <ion-card-title>
         {{tipo}}
         <ion-icon  *ngIf="estado =='Resuelta'" style="color:green;float:right;font-size: 2em;" name="checkmark-circle"></ion-icon>
-        <ion-icon  class="parpadea" *ngIf="caducada && estado =='Pendiente'" style="color:red;float:right;font-size: 2em;" name="close-circle"></ion-icon>
+        <ion-icon  class="parpadea" *ngIf="caducada && estado =='Pendiente'&&fechalimite!=''" style="color:red;float:right;font-size: 2em;" name="close-circle"></ion-icon>
       </ion-card-title>
       <p>
         {{descripcion}}

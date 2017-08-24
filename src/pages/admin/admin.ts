@@ -27,8 +27,11 @@ export class Admin {
   ionViewDidLoad() {
     console.log('ionViewDidLoad Admin');
   }
+
   crearIncidencia(){
     this.navCtrl.push(DialogoIncidencia);
   }
+
+
 
 }

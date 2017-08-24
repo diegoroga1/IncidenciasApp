@@ -10,6 +10,10 @@
       <p>{{usuarioActual}}</p>
       <button *ngIf="tipo=='admin'" ion-item (click)="crearUsuario()">
         Crear Usuario
+
+      </button>
+      <button  ion-item (click)="changePassword()">
+        Cambiar contraseña
       </button>
       <button menuClose ion-item (click)="logOut()" >
         Cerrar sesión

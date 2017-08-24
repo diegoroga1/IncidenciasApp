@@ -1,12 +1,18 @@
-page-vista-ubicacion #map {
-  width: 100%;
-  height: 100%; }
-page-vista-ubicacion .scroll {
-  height: 100%; }
-page-vista-ubicacion .button-ok {
-  position: absolute;
-  top: 10px;
-  text-align: center;
-  width: 100%; }
+page-vista-ubicacion {
+  /* Optional: Makes the sample page fill the window. */ }
+  page-vista-ubicacion html, page-vista-ubicacion body {
+    height: 100%;
+    margin: 0;
+    padding: 0; }
+  page-vista-ubicacion #map {
+    width: 100%;
+    height: 100%; }
+  page-vista-ubicacion .scroll {
+    height: 100%; }
+  page-vista-ubicacion .button-ok {
+    position: absolute;
+    top: 10px;
+    text-align: center;
+    width: 100%; }
 
 /*# sourceMappingURL=vista-ubicacion.css.map */

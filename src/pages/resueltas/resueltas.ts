@@ -9,11 +9,16 @@ import {FirebaseListObservable,AngularFireDatabase} from "angularfire2/database"
 
 export class Resueltas {
   resueltas:FirebaseListObservable<any>;
+  usuarioActual:any;
   constructor(public navCtrl: NavController, public navParams: NavParams,private af:AngularFireDatabase) {
+  this.usuarioActual=localStorage.getItem('user_uid');
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad Resueltas');
+    this.mostrarIncidenciasResueltas();
+  }
+  ionViewWillEnter(){
     this.mostrarIncidenciasResueltas();
   }
   mostrarIncidenciasResueltas() {
@@ -25,6 +30,14 @@ export class Resueltas {
         }
       })
     })
+  }
+  doRefresh(refresher) {
+    console.log('Begin async operation', refresher);
+    this.mostrarIncidenciasResueltas();
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      refresher.complete();
+    }, 2000);
   }
 
 }

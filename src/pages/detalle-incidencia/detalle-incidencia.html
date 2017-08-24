@@ -21,16 +21,16 @@
   <div class="content-detalle" *ngFor="let item of datosIncidencia">
     <ion-slides pager="true" effect="flip">
       <ion-slide >
-        <ion-icon class="icon-camera" *ngIf="!item.foto1" (click)="addImage1()"  name="camera" ></ion-icon>
-        <img *ngIf=item.foto1 (press)="pressEvent(e,'foto1')" [src]="domsanitizer.bypassSecurityTrustUrl(item.foto1)" >
+        <ion-icon class="icon-camera" *ngIf="!foto1" (click)="addImage1()"  name="camera" ></ion-icon>
+        <img *ngIf=foto1 (press)="pressEvent(e,'foto1')" [src]="domsanitizer.bypassSecurityTrustUrl(foto1)" >
       </ion-slide>
       <ion-slide >
-        <ion-icon class="icon-camera" *ngIf="!item.foto2" (click)="addImage2()"  name="camera" ></ion-icon>
-        <img *ngIf=item.foto2 (press)="pressEvent(e,'foto2')" [src]="domsanitizer.bypassSecurityTrustUrl(item.foto2)" >
+        <ion-icon class="icon-camera" *ngIf="!foto2" (click)="addImage2()"  name="camera" ></ion-icon>
+        <img *ngIf=foto2 (press)="pressEvent(e,'foto2')" [src]="domsanitizer.bypassSecurityTrustUrl(foto2)" >
       </ion-slide>
-      <ion-slide *ngIf=item.fotoR >
+      <ion-slide *ngIf=fotoResuelta >
         <!--<ion-icon class="icon-camera"  *ngIf="!item.fotoR" (click)="addImage()"  name="camera" ></ion-icon>-->
-        <img  (press)="pressEvent(e,'fotoR')" [src]="domsanitizer.bypassSecurityTrustUrl(item.fotoR)">
+        <img   [src]="domsanitizer.bypassSecurityTrustUrl(fotoResuelta)">
       </ion-slide>
     </ion-slides>
   <!--  <img (press)="pressEvent($event)" [src]="domsanitizer.bypassSecurityTrustUrl(item.fotos)">-->
@@ -39,7 +39,7 @@
     </ion-title>
     <div class="texto-detalle">
       <h5 style="text-align: center;">{{item.descripcion}}</h5>
-      <h5 >Encargado: {{nombreUsuario}}</h5>
+      <h5 >Asignado: {{nombreUsuario}}</h5>
       <ion-label *ngIf="item.fechalimite!=''">Fecha limite: <ion-badge item-end>{{item.fechalimite}}</ion-badge></ion-label>
 
       <div *ngIf="item.estado != 'Resuelta'" class="settings">
@@ -51,14 +51,21 @@
       </div>
     </div>
     <ion-buttons *ngIf="item.estado != 'Resuelta'" >
+      <button style="width: 100%;" ion-button icon-only (click)="irAlMapa()" color="dark">
+        Ver/Editar ubicación
+      </button>
+    </ion-buttons>
+    <ion-buttons *ngIf="item.estado != 'Resuelta'" >
       <button style="width: 100%;" ion-button icon-only (click)="showAlert()" color="danger">
         Resolver
       </button>
     </ion-buttons>
     <div *ngIf="item.estado == 'Resuelta'" >
       <span style="text-align: center;"><h1>RESUELTA</h1></span>
+      <div>
+        <h4 style="text-align: center;">Descripción de la resolución</h4>
+        <p>{{item.descripcionR}}</p>
+      </div>
     </div>
   </div>
-
-
 </ion-content>

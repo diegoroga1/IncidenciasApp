@@ -11,8 +11,11 @@
   </ion-navbar>
 </ion-header>
 <ion-content padding class="home">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <ion-list *ngFor="let item of creadas |async">
-    <card-design *ngIf="item.creadaPor == usuarioActual" [codigo]=item.codigo [foto1]=item.foto1 [key]=item.$key [tipo]=item.tipo [encargado]=item.encargado [estado]=item.estado [ubicacion]=item.ubicacion [descripcion]=item.descripcion [fecha]=item.fecha [fechalimite]=item.fechalimite  ></card-design>
+    <card-design *ngIf="item.creadaPor == usuarioActual" [id]=item.id [codigo]=item.codigo [foto1]=item.foto1 [foto2]=item.foto2 [fotoR]=item.fotoR [key]=item.$key [tipo]=item.tipo [encargado]=item.encargado [estado]=item.estado [ubicacion]=item.ubicacion [descripcion]=item.descripcion [fecha]=item.fecha [fechalimite]=item.fechalimite  ></card-design>
   </ion-list>
 
 </ion-content>

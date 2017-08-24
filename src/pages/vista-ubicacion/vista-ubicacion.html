@@ -14,7 +14,7 @@
 
 
 <ion-content padding>
-  <div #map id="map">
+  <div (press)="pressEvent($event)" #map id="map">
   </div>
     <ion-buttons class="button-ok">
       <button disabled={{modificado}} ion-button (click)="cambiarUbicacion()">

@@ -17,7 +17,7 @@
   <form #form="ngForm" id="form-new-diag">
     <ion-item class="transparent">
       <ion-label stacked> Tipo</ion-label>
-      <ion-select [(ngModel)]="incidencia.tipo"  name="tipo">
+      <ion-select interface="action-sheet" [(ngModel)]="incidencia.tipo"  name="tipo">
         <ion-option *ngFor="let tipo of tipos" value="{{tipo.$key}}"  required>
           {{tipo.$key}}
         </ion-option>
@@ -33,7 +33,7 @@
     </ion-item>
     <ion-item class="transparent">
       <ion-label stacked> Asignar a</ion-label>
-      <ion-select  [(ngModel)]="incidencia.encargado" name="encargado">
+      <ion-select interface="action-sheet" [(ngModel)]="incidencia.encargado" name="encargado">
         <ion-option   *ngFor="let encargado of encargados"  [selected]="encargado.key==adminDefaultKey" value="{{encargado.key}}" required>
           {{encargado.nombre}}
         </ion-option>
@@ -45,7 +45,7 @@
       </button>
     </ion-buttons>
     <div style="margin: 0;text-align: center;" *ngIf="fotoOk">
-      <p style="">Vista previa : <img style="vertical-align: middle;" [src]="domsanitizer.bypassSecurityTrustUrl(base64img)" style="width: 40px;height: auto;"></p>
+      <p style="">Vista previa : <img style="vertical-align: middle;" [src]="domsanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64,'+base64img)" style="width: 40px;height: auto;"></p>
     </div>
     <ion-buttons >
       <button class="boton-ubicacion" style="width: 100%;" ion-button icon-left (click)="seleccionarUbicacion()">

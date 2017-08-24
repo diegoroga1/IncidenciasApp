@@ -1,5 +1,5 @@
 import { Component,Inject } from '@angular/core';
-import { NavController ,NavParams,ToastController} from 'ionic-angular';
+import { NavController ,NavParams,ToastController,Events} from 'ionic-angular';
 import {AngularFireModule} from 'angularfire2';
 import {Admin} from '../admin/admin';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
@@ -21,7 +21,7 @@ export class Intro {
   passwd:any;
   logo:any;
   imageDefault:any;
-  constructor(public navCtrl: NavController,@Inject(FirebaseApp) firebaseApp: firebase.app.App,public toast:ToastController, public afAuth: AngularFireAuth, public af: AngularFireDatabase,public navParams: NavParams,public domsanitizer:DomSanitizer) {
+  constructor(public events:Events,public navCtrl: NavController,@Inject(FirebaseApp) firebaseApp: firebase.app.App,public toast:ToastController, public afAuth: AngularFireAuth, public af: AngularFireDatabase,public navParams: NavParams,public domsanitizer:DomSanitizer) {
     firebaseApp.storage().ref().child('ayuntamiento.jpg').getDownloadURL().then(url => this.imageDefault = url);
 
   }
@@ -36,10 +36,14 @@ export class Intro {
     console.log(form.value.email);
     this.afAuth.auth.signInWithEmailAndPassword(this.email,this.passwd).then((success)=>{
       //IDENTIFICAR TIPO USUARIO **************
+      console.log(success);
       localStorage.setItem("user_uid",success.uid);
       localStorage.setItem("user_name",success.name);
       sessionStorage.setItem("user_uid",success.uid);
       this.writeToast("Sesión iniciada correctamente")
+      this.events.publish('useractual:changed', success.uid);
+      this.events.publish('rol:changed', success.uid);
+
       this.navCtrl.setRoot(Admin);
     }).catch(
       (error)=>{
