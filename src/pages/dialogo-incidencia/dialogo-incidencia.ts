@@ -2,7 +2,6 @@ import { Component ,Inject,ElementRef,ViewChild,Input} from '@angular/core';
 import { NavController ,NavParams,ActionSheetController,ToastController} from 'ionic-angular';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import {Admin} from '../admin/admin';
-import {SubirFoto} from '../../providers/subir-foto';
 import { CogerUbicacion } from '../../providers/coger-ubicacion';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Camera } from '@ionic-native/camera';
@@ -29,7 +28,6 @@ export class DialogoIncidencia {
   encargados=[];
   userKey:any;
   ubicacion:{}
-  encargadoKey:any;
   base64img:string;
   photos:any[]=[];
   latLng:any;
@@ -44,12 +42,10 @@ export class DialogoIncidencia {
   id:any;
   codigoTipo:any;
   storageRef:any;
-  fileUri:any;
   constructor(public navCtrl: NavController,
               public af:AngularFireDatabase,
               public navParams: NavParams,
               public actionSheetCtrl:ActionSheetController,
-              public sFoto:SubirFoto,
               private camera: Camera,
               private geolocation:Geolocation,
               public cogerUbi:CogerUbicacion,
@@ -119,16 +115,13 @@ export class DialogoIncidencia {
   }
   //AÑADE LA INCIDENCIA CREADA A LA RAMA INCIDENCIAS Y A CADA USUARIO DENTRO DE SU RAMA INCIDENCIASCREADAS
   addIncidencia(){
-
     this.incidenciaArray.push(this.incidencia);//GUARDAMOS LOS DATOS DEL FORM EN UN ARRAY
     this.incidenciaArray.forEach(data=>{
       this.tipos.forEach(campos=>{
         if(campos.$key==data.tipo){
           this.codigoTipo=campos.$value;
         }
-
       })
-
       this.incidenciafinal={//CREAMOS UNA INCIDENCIA INICIAL Y APARTE RECOGEMOS DATOS DEL FORM DEL HTML
         fecha: new Date().getDate() + '/'+(new Date().getMonth()+1)+'/'+new Date().getFullYear(),
         hora:new Date().getHours()+ ':'+ new Date().getMinutes(),
@@ -143,18 +136,14 @@ export class DialogoIncidencia {
         id: this.id,
         codigo:this.codigoTipo+'-'+this.id
       };
-
     })
     this.af.list('/incidencias').push(this.incidenciafinal).then((success)=>{
       //AÑADE LA INCIDENCIA A LA RAMA INCIDENCIA
       let codigoIncidencia=this.codigoTipo+'-'+this.id;
       if(this.base64img){
-        //this.af.object('/incidencias/'+success.key+'/foto1').set(this.base64img);//AÑADE LAS FOTOS A LA RAMA FOTOS DE LA INCIDENCIA
         this.storageRef.child('imagenes/'+this.id+'/foto1.jpg').putString(this.base64img,'base64').then(snapshot=>{
-
         }).catch(error=>{
         });
-
       }
       this.incidenciaArray.forEach(data=>{
         console.log(data);
@@ -167,18 +156,17 @@ export class DialogoIncidencia {
   }).catch(error=>{
     console.log(error);
     });
-
   }
+
   //AÑADIR INCIDENCIA AL USUARIO ASIGNADO
   addIncidenciaAsignadaUsuario(userKey,key,descripcion){
-   // this.cogerKeyUsuarioPorNombre(userName);
     if(userKey==undefined){
       this.af.object('/users/'+this.adminDefaultKey+'/incidenciasAsignadas/'+key).set(descripcion);
     }else{
       this.af.object('/users/'+userKey+'/incidenciasAsignadas/'+key).set(descripcion);
-
     }
   }
+
   //RECOGE ENCARGADOS A LOS QUE SE LE PERMITE ASIGNAR TAREA
   getEncargadosPermiteRecibir(){
     this.af.list('/users').forEach(data=>{
@@ -206,6 +194,7 @@ export class DialogoIncidencia {
       })
     })
   }
+
   //Menu que se muestra para seleccionar opcion de subida de foto
   public presentActionSheet() {
     let actionSheet = this.actionSheetCtrl.create({
@@ -224,8 +213,6 @@ export class DialogoIncidencia {
           icon:'camera',
           handler: () => {
             this.takePicture();
-
-
           }
         },
         {
@@ -236,8 +223,6 @@ export class DialogoIncidencia {
     });
     actionSheet.present();
   }
-
-
 
   //Abre la camara para sacar foto y la guarda en base64 en array photos
   takePicture(){
@@ -294,8 +279,6 @@ export class DialogoIncidencia {
         console.log(campos);
       })
       console.log(data);
-
-
     })
   }
 }

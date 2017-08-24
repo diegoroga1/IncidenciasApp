@@ -3,8 +3,8 @@ import {DetalleIncidencia} from '../../pages/detalle-incidencia/detalle-incidenc
 import { NavController ,NavParams} from 'ionic-angular';
 import {AngularFireDatabase,FirebaseListObservable} from 'angularfire2/database';
 import { DomSanitizer } from '@angular/platform-browser';
-import {CogerNombre} from '../../providers/coger-nombre';
 import {FirebaseApp} from 'angularfire2';
+import {CogerNombre} from '../../providers/coger-nombre';
 import * as firebase from 'firebase';
 /**
  * Generated class for the CardDesign component.

@@ -5,7 +5,6 @@ import {Asignadas} from '../asignadas/asignadas';
 import {Creadas} from '../creadas/creadas';
 import {Resueltas} from '../resueltas/resueltas';
 import {AngularFireDatabase} from 'angularfire2/database';
-import {SubirArchivo} from '../../providers/subir-archivo';
 @Component({
   selector: 'page-admin',
   templateUrl: 'admin.html',
@@ -23,15 +22,10 @@ export class Admin {
       this.rolUsuario=data.rol;
     });
   }
-
   ionViewDidLoad() {
     console.log('ionViewDidLoad Admin');
   }
-
   crearIncidencia(){
     this.navCtrl.push(DialogoIncidencia);
   }
-
-
-
 }

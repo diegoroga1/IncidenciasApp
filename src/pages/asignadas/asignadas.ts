@@ -3,7 +3,6 @@ import { NavController ,NavParams,ToastController} from 'ionic-angular';
 import {FirebaseListObservable,AngularFireDatabase} from "angularfire2/database";
 import {FirebaseApp} from 'angularfire2';
 import * as firebase from 'firebase';
-import {CardDesign} from '../../components/card-design/card-design';
 @Component({
   selector: 'page-asignadas',
   templateUrl: 'asignadas.html',

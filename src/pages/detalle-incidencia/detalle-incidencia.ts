@@ -5,7 +5,6 @@ import {Camera, CameraOptions} from '@ionic-native/camera';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import { DomSanitizer } from '@angular/platform-browser';
 import {CogerNombre} from '../../providers/coger-nombre';
-import {SubirFoto} from '../../providers/subir-foto';
 import {FirebaseApp} from 'angularfire2';
 import * as firebase from 'firebase';
 @Component({
@@ -15,10 +14,7 @@ import * as firebase from 'firebase';
 })
 export class DetalleIncidencia {
   datosIncidencia = [];
-  photosIncidencia: FirebaseListObservable<any>;
   fotos = [];
-  fotoNueva: string;
-  public base64Image: string;
   usuarioActual: string;
   nombreUsuario: string;
   base64img: string;
@@ -31,7 +27,6 @@ export class DetalleIncidencia {
   foto2:string
   fotoR:string;
   storageRef:any;
-  fotoOk:boolean;
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
               private actionSheetCtrl: ActionSheetController,
@@ -41,17 +36,12 @@ export class DetalleIncidencia {
               private domsanitizer: DomSanitizer,
               public cogerNombre: CogerNombre,
               public toast: ToastController,
-              public sFoto: SubirFoto,
                @Inject(FirebaseApp) public firebaseApp: firebase.app.App) {
     this.af.list('/tipos').forEach(tipos=>{
       tipos.forEach(tipo=>{
         this.tipos.push(tipo);
       })
-
-
-
     });
-
     this.af.list('/users').forEach(users=>{
       users.forEach(user=>{
         if(user.recibe){
@@ -62,7 +52,6 @@ export class DetalleIncidencia {
     this.getParamsIncidencia();
     this.storageRef=firebaseApp.storage().ref();
   }
-
   ionViewDidLoad() {
     console.log('ionViewDidLoad DetalleIncidencia');
     console.log(window.location);
@@ -70,20 +59,17 @@ export class DetalleIncidencia {
     this.usuarioActual = localStorage.getItem("user_uid");
     this.af.object('/users/' + this.usuarioActual + '/rol').forEach(data => {
       this.rolUsuario = data.$value;
-
     });
     console.log(this.rolUsuario);
     this.actualizarDatos();
   }
   ionViewWillEnter(){
-
     this.datosIncidencia.forEach(data=>{
       this.getPhotos(data.id)
       console.log(data.id);
     })
     this.actualizarDatos()
   }
-
   getParamsIncidencia() {
     this.datosIncidencia = [];
     this.datosIncidencia.push({
@@ -267,10 +253,7 @@ export class DetalleIncidencia {
       });
       prompt.present();
     })
-
-
   }
-
   //ALERTA PARA RESOLVER INCIDENCIA
   showAlert() {
     let prompt = this.alertCtrl.create({
@@ -294,7 +277,6 @@ export class DetalleIncidencia {
     });
     prompt.present();
   }
-
   //RESUELVE INCIDENCIA, CAMBIA ESTADO Y AÑADE FOTO DE RESOLUCION
   resolverIncidencia() {
     this.getParamsIncidencia();
@@ -305,11 +287,10 @@ export class DetalleIncidencia {
       console.log(this.usuarioActual);
       this.writeToast("Incidencia resuelta");
     })
-
     this.alertTextoRes()
     this.navCtrl.pop();
-
   }
+
   alertTextoRes(){
     let alert = this.alertCtrl.create({
       title: 'Añadir descripcion de resolución',
@@ -341,6 +322,7 @@ export class DetalleIncidencia {
     });
     alert.present();
   }
+
   //ALERTA PARA SUBIR FOTO AL RESOLVER
   alertFoto() {
     let alert = this.alertCtrl.create({
@@ -405,7 +387,6 @@ export class DetalleIncidencia {
       this.af.object('/incidencias/' + data.key + '/codigo').set(codigoNuevo)
     })
     this.actualizarDatos()
-
   }
 
   cambiarEncargado(encargadoNuevo) {
@@ -486,7 +467,6 @@ export class DetalleIncidencia {
       this.af.object('/incidencias/' + data.key + '/fechalimite').set(fechaNueva).then(() => {
         this.writeToast("Se ha cambiado la fecha")
       });
-
     })  }
 
   alertCambiarFecha() {
@@ -509,13 +489,13 @@ export class DetalleIncidencia {
           handler: data => {
             console.log(data[0]);
             this.cambiarFecha(data[0]);
-
           }
         }
       ]
     });
     alert.present();
   }
+
   getPhotos(id){
     console.log(id)
     this.storageRef.child('imagenes/'+id+'/foto1.jpg').getDownloadURL()
@@ -541,9 +521,8 @@ export class DetalleIncidencia {
     }),(err)=>{
       console.log(err);
     }
-
-    //this.subirFotoNueva(this.base64img,tipo,datos);
   }
+
   choosePicture(tipo,datos){
     this.camera.getPicture({
       sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
@@ -556,33 +535,26 @@ export class DetalleIncidencia {
     }),(err)=>{
       console.log(err);
     }
-
-
   }
+
   subirFotoNueva(foto,tipo,params){
     this.datosIncidencia=params;
     if(tipo=='dos'){
       this.foto2='data:image/jpeg;base64,'+foto
       this.datosIncidencia.forEach(data=>{
         console.log(data);
-        //  this.af.object('/incidencias/'+data.$key+'/foto2').set(foto);
         this.storageRef.child('imagenes/'+data.id+'/foto2.jpg').putString(foto,'base64')
       })
     }if(tipo=='uno'){
       this.foto1='data:image/jpeg;base64,'+foto
       this.datosIncidencia.forEach(data=>{
-        // this.af.object('/incidencias/'+data.$key+'/foto1').set(foto);
         this.storageRef.child('imagenes/'+data.id+'/foto1.jpg').putString(foto,'base64');
-
       })
-
     }
     if(tipo=='R'){
       this.fotoResuelta='data:image/jpeg;base64,'+foto
       this.datosIncidencia.forEach(data=>{
-        // this.af.object('/incidencias/'+data.$key+'/fotoR').set(foto);
         this.storageRef.child('imagenes/'+data.id+'/fotoR.jpg').putString(foto,'base64');
-
       })
     }
   }

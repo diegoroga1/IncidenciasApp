@@ -36,13 +36,9 @@ export class VistaUbicacion {
   }
   ionViewDidLoad() {
     console.log('ionViewDidLoad VistaUbicacion');
-
   }
   //Crea un mapa
-    pressEvent(e){
-      console.log(e);
 
-    }
     loadMap(){
        let latLng = new google.maps.LatLng(this.miPosicion.lat, this.miPosicion.long);
         let mapOptions = {
@@ -55,7 +51,6 @@ export class VistaUbicacion {
         this.addMiUbicacion();
         this.addUbicacionIncidencia(this.posicionIncidencia);
     }
-
     //Coge ubicacion actual
     getCurrentPosition(){
       this.geolocation.getCurrentPosition()
@@ -136,7 +131,7 @@ export class VistaUbicacion {
       longpress = (end - start < 500) ? false : true;
 
     });
-    //RECOGE EL EVENTO DE ARRASTRE DEL MARCADOR EN EL MAPA
+    //*START* RECOGE EL EVENTO DE ARRASTRE DEL MARCADOR EN EL MAPA
     /*google.maps.event.addListener(marker, 'dragend', function(data) {
       console.log(data);
       console.log(marker);
@@ -147,9 +142,9 @@ export class VistaUbicacion {
       this.modificado=null;
       this.posicionIncidencia={lat,long};
     }.bind(this));*/
+    //*END* EVENTO ARRASTRE
 
       this.marker.setMap(this.map);
-
       this.markerIn.setMap(this.map);
       //this.map.addMarker(marker);
     let content = "<h4>Information!</h4>";

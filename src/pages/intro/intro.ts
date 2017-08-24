@@ -23,12 +23,9 @@ export class Intro {
   imageDefault:any;
   constructor(public events:Events,public navCtrl: NavController,@Inject(FirebaseApp) firebaseApp: firebase.app.App,public toast:ToastController, public afAuth: AngularFireAuth, public af: AngularFireDatabase,public navParams: NavParams,public domsanitizer:DomSanitizer) {
     firebaseApp.storage().ref().child('ayuntamiento.jpg').getDownloadURL().then(url => this.imageDefault = url);
-
   }
-
   ionViewDidLoad() {
     console.log('ionViewDidLoad Intro');
-
   }
   submitForm(form){
     this.email=form.value.email;
@@ -43,7 +40,6 @@ export class Intro {
       this.writeToast("Sesión iniciada correctamente")
       this.events.publish('useractual:changed', success.uid);
       this.events.publish('rol:changed', success.uid);
-
       this.navCtrl.setRoot(Admin);
     }).catch(
       (error)=>{

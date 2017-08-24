@@ -9,7 +9,6 @@ import { FilePath } from '@ionic-native/file-path';
 import { Camera } from '@ionic-native/camera';
 import {CogerNombre} from '../providers/coger-nombre';
 
-import { SubirFoto } from '../providers/subir-foto';
 import { CogerUbicacion } from '../providers/coger-ubicacion';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -17,7 +16,6 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import {AngularFireModule} from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
-import { SubirArchivo } from '../providers/subir-archivo';
 
 
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
@@ -32,7 +30,6 @@ import {Creadas} from '../pages/creadas/creadas';
 import {Resueltas} from '../pages/resueltas/resueltas';
 import {VistaUbicacion} from '../pages/vista-ubicacion/vista-ubicacion';
 
-import {CogerIncidencias} from '../providers/coger-incidencias';
 import { Geolocation } from '@ionic-native/geolocation';
 import { GoogleMaps } from '@ionic-native/google-maps';
 
@@ -87,14 +84,11 @@ export const firebaseConfig = {
     Transfer,
     Camera,
     FilePath,
-    SubirFoto,
     Geolocation,
     GoogleMaps,
     CogerUbicacion,
     ViewChild,
     CogerNombre,
-    CogerIncidencias,
-    SubirArchivo,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
